@@ -23,7 +23,12 @@ Geschmacksprofil, ermittelt im Gespräch (Runde 1–2). Grundlage für alle Them
 - **Karten:** Standard-HA-Karten (Tile, Thermostat, Entities …) und **Mushroom Cards**.
   Das Theme muss beide über Variablen sauber abdecken.
 
+## Entscheidungen
+- [x] **Variante B „Nebel“**: heller, weicher, zurückhaltend → `themes/nebel.yaml`
+- [x] Kontrast: alle Text-/Icon-Farben auf WCAG AA geprüft. Dafür wurden im Light Mode
+      Sekundärtext (`#616C7C`) und Amber (`#BA7E34`) etwas abgedunkelt.
+- [x] Dark Mode ohne Karten-Schatten (nachts blendfrei, Tiefe kommt über Helligkeitsstufen).
+
 ## Offene Entscheidungen
-- [ ] Variante A / B / C (siehe `preview/taste-test.html`) oder Mischung
 - [ ] Schrift laden (benötigt Frontend-Ressource bzw. card-mod) oder System-Fallback
 - [ ] Hintergrund: einfarbig, sanfter Verlauf oder Bild

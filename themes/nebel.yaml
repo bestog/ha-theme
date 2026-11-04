@@ -1,0 +1,312 @@
+# ---------------------------------------------------------------------------
+# Nebel: a warm, homely Home Assistant theme
+#   smoky blue-gray base · indigo accent · amber for light & warmth
+#   light + dark mode (follows the system) · radius 14px · Plus Jakarta Sans
+#
+# Customize: the main colors are defined at the top of each mode
+# (YAML anchors &name / *name). Change them there and the change carries
+# through everywhere.
+# ---------------------------------------------------------------------------
+
+Nebel:
+  # ---------- Shared settings (independent of mode) ----------
+  # Typography: Plus Jakarta Sans, if loaded as a resource (see README),
+  # otherwise falls back cleanly to the system font.
+  primary-font-family: &font "'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+  paper-font-common-base_-_font-family: *font
+  paper-font-body1_-_font-family: *font
+  mdc-typography-font-family: *font
+  ha-font-family-body: *font
+  ha-font-family-heading: *font
+
+  # Shapes
+  ha-card-border-radius: "14px"
+  ha-card-border-width: "0px"
+  ha-dialog-border-radius: "22px"
+  mdc-shape-small: "10px"
+  mdc-shape-medium: "14px"
+  mdc-shape-large: "22px"
+  ha-badge-border-radius: "999px"
+  ha-tile-icon-border-radius: "50%"
+
+  # Mushroom: shapes & typography
+  mush-spacing: "12px"
+  mush-card-primary-font-size: "14px"
+  mush-card-secondary-font-size: "12px"
+  mush-card-primary-font-weight: "600"
+  mush-card-secondary-font-weight: "500"
+  mush-card-primary-line-height: "20px"
+  mush-card-secondary-line-height: "18px"
+  mush-icon-border-radius: "50%"
+  mush-icon-size: "40px"
+  mush-control-border-radius: "12px"
+  mush-control-height: "44px"            # touch target for phone & tablet
+  mush-chip-border-radius: "999px"
+  mush-chip-height: "36px"
+  mush-chip-spacing: "8px"
+  mush-chip-font-size: "13px"
+  mush-chip-font-weight: "600"
+  mush-chip-icon-size: "18px"
+  mush-badge-border-radius: "999px"
+  mush-title-font-size: "24px"
+  mush-title-font-weight: "700"
+  mush-title-line-height: "30px"
+  mush-subtitle-font-size: "14px"
+  mush-subtitle-font-weight: "500"
+
+  modes:
+    # =======================================================================
+    # LIGHT
+    # =======================================================================
+    light:
+      # ---- Palette (customize here) ----
+      primary-background-color: &l-bg "#EEF1F4"      # page background
+      card-background-color: &l-card "#FFFFFF"       # cards
+      primary-text-color: &l-text "#2A313B"
+      secondary-text-color: &l-sec "#616C7C"
+      divider-color: &l-div "#E3E7EC"
+      primary-color: &l-acc "#5866C9"                # indigo accent
+      accent-color: *l-acc
+      # warm tone (light/heating): #BA7E34 · green: #4A9A78 · red: #C9605B
+
+      rgb-primary-color: &l-acc-rgb "88, 102, 201"
+      rgb-accent-color: *l-acc-rgb
+      rgb-primary-text-color: "42, 49, 59"
+      rgb-secondary-text-color: "97, 108, 124"
+      rgb-card-background-color: "255, 255, 255"
+      rgb-primary-background-color: "238, 241, 244"
+
+      # ---- Surfaces ----
+      secondary-background-color: "#E6EAEF"
+      ha-card-background: *l-card
+      ha-card-box-shadow: "0 1px 2px rgba(42, 49, 59, 0.04), 0 4px 16px rgba(42, 49, 59, 0.05)"
+      lovelace-background: *l-bg
+      paper-card-background-color: *l-card
+      paper-dialog-background-color: *l-card
+      ha-dialog-surface-background: *l-card
+      mdc-theme-surface: *l-card
+      paper-listbox-background-color: *l-card
+      markdown-code-background-color: "#F3F5F8"
+      table-row-background-color: *l-card
+      table-row-alternative-background-color: "#F6F8FA"
+      input-fill-color: "#F1F3F6"
+      input-disabled-fill-color: "#F1F3F6"
+
+      # ---- Text ----
+      text-primary-color: "#FFFFFF"                  # text on accent backgrounds
+      disabled-text-color: &l-dis "#A3ACB8"
+      primary-text-on-background-color: *l-text
+      paper-item-icon-color: *l-sec
+      mdc-theme-primary: *l-acc
+      mdc-theme-on-primary: "#FFFFFF"
+
+      # ---- Header & sidebar ----
+      app-header-background-color: *l-bg
+      app-header-text-color: *l-text
+      app-header-edit-background-color: "#DCE1E8"
+      app-header-edit-text-color: *l-text
+      sidebar-background-color: "#E6EAEF"
+      sidebar-text-color: *l-sec
+      sidebar-icon-color: *l-sec
+      sidebar-selected-background-color: "rgba(88, 102, 201, 0.10)"
+      sidebar-selected-icon-color: *l-acc
+      sidebar-selected-text-color: *l-acc
+
+      # ---- Controls ----
+      switch-checked-color: *l-acc
+      switch-checked-button-color: *l-acc
+      switch-checked-track-color: *l-acc
+      switch-unchecked-button-color: "#FFFFFF"
+      switch-unchecked-track-color: "#C3CAD4"
+      slider-color: *l-acc
+      slider-bar-color: "rgba(88, 102, 201, 0.20)"
+      paper-slider-knob-color: *l-acc
+      paper-slider-active-color: *l-acc
+      paper-slider-container-color: "rgba(88, 102, 201, 0.20)"
+
+      # ---- Status colors ----
+      success-color: "#4A9A78"
+      warning-color: "#BA7E34"
+      error-color: "#C9605B"
+      info-color: *l-acc
+
+      # ---- Entity states (tile card, icons, badges) ----
+      state-icon-color: *l-sec
+      state-active-color: *l-acc
+      state-inactive-color: *l-dis
+      state-unavailable-color: *l-dis
+      state-light-active-color: "#BA7E34"            # light = warm
+      state-light-on-color: "#BA7E34"
+      state-climate-heat-color: "#BA7E34"
+      state-climate-cool-color: "#5B8DC9"
+      state-climate-auto-color: "#4A9A78"
+      state-climate-heat_cool-color: "#4A9A78"
+      state-climate-dry-color: "#C2A04B"
+      state-climate-fan_only-color: "#5B8DC9"
+      state-fan-active-color: *l-acc
+      state-switch-active-color: *l-acc
+      state-input_boolean-active-color: *l-acc
+      state-media_player-active-color: *l-acc
+      state-cover-active-color: *l-acc
+      state-lock-locked-color: "#4A9A78"
+      state-lock-unlocked-color: "#C9605B"
+      state-lock-jammed-color: "#C9605B"
+      state-alarm_control_panel-armed_away-color: "#4A9A78"
+      state-alarm_control_panel-disarmed-color: *l-sec
+      state-alarm_control_panel-triggered-color: "#C9605B"
+      state-binary_sensor-active-color: "#BA7E34"
+      state-person-home-color: "#4A9A78"
+      state-person-not_home-color: *l-sec
+      state-sun-above_horizon-color: "#BA7E34"
+      state-sun-below_horizon-color: *l-acc
+      energy-grid-consumption-color: *l-acc
+      energy-solar-color: "#BA7E34"
+
+      # ---- Mushroom colors (RGB) ----
+      mush-rgb-state-entity: *l-acc-rgb
+      mush-rgb-state-light: "186, 126, 52"
+      mush-rgb-state-fan: *l-acc-rgb
+      mush-rgb-state-switch: *l-acc-rgb
+      mush-rgb-state-media-player: *l-acc-rgb
+      mush-rgb-state-cover: *l-acc-rgb
+      mush-rgb-state-climate-heat: "186, 126, 52"
+      mush-rgb-state-climate-cool: "91, 141, 201"
+      mush-rgb-state-lock-locked: "74, 154, 120"
+      mush-rgb-state-lock-unlocked: "201, 96, 91"
+      mush-rgb-state-person-home: "74, 154, 120"
+      mush-rgb-amber: "186, 126, 52"
+      mush-rgb-orange: "209, 122, 70"
+      mush-rgb-indigo: *l-acc-rgb
+      mush-rgb-blue: "91, 141, 201"
+      mush-rgb-green: "74, 154, 120"
+      mush-rgb-red: "201, 96, 91"
+      mush-rgb-disabled: "163, 172, 184"
+      mush-chip-background: *l-card
+
+    # =======================================================================
+    # DARK
+    # =======================================================================
+    dark:
+      # ---- Palette (customize here) ----
+      primary-background-color: &d-bg "#1B1F25"
+      card-background-color: &d-card "#252B33"
+      primary-text-color: &d-text "#E3E7EC"
+      secondary-text-color: &d-sec "#959EAB"
+      divider-color: &d-div "#333B46"
+      primary-color: &d-acc "#9EA7EE"                # brighter indigo for dark backgrounds
+      accent-color: *d-acc
+      # warm tone: #E7B26C · green: #73C29C · red: #E8807C
+
+      rgb-primary-color: &d-acc-rgb "158, 167, 238"
+      rgb-accent-color: *d-acc-rgb
+      rgb-primary-text-color: "227, 231, 236"
+      rgb-secondary-text-color: "149, 158, 171"
+      rgb-card-background-color: "37, 43, 51"
+      rgb-primary-background-color: "27, 31, 37"
+
+      # ---- Surfaces ----
+      secondary-background-color: "#20252C"
+      ha-card-background: *d-card
+      ha-card-box-shadow: "none"                     # no glow at night, contrast does the work
+      lovelace-background: *d-bg
+      paper-card-background-color: *d-card
+      paper-dialog-background-color: *d-card
+      ha-dialog-surface-background: *d-card
+      mdc-theme-surface: *d-card
+      paper-listbox-background-color: *d-card
+      markdown-code-background-color: "#1F242B"
+      table-row-background-color: *d-card
+      table-row-alternative-background-color: "#2A3038"
+      input-fill-color: "#2C333C"
+      input-disabled-fill-color: "#2C333C"
+
+      # ---- Text ----
+      text-primary-color: "#15181E"                  # dark text on light indigo
+      disabled-text-color: &d-dis "#6B7380"
+      primary-text-on-background-color: *d-text
+      paper-item-icon-color: *d-sec
+      mdc-theme-primary: *d-acc
+      mdc-theme-on-primary: "#15181E"
+
+      # ---- Header & sidebar ----
+      app-header-background-color: *d-bg
+      app-header-text-color: *d-text
+      app-header-edit-background-color: "#2C333C"
+      app-header-edit-text-color: *d-text
+      sidebar-background-color: "#171A1F"
+      sidebar-text-color: *d-sec
+      sidebar-icon-color: *d-sec
+      sidebar-selected-background-color: "rgba(158, 167, 238, 0.12)"
+      sidebar-selected-icon-color: *d-acc
+      sidebar-selected-text-color: *d-acc
+
+      # ---- Controls ----
+      switch-checked-color: *d-acc
+      switch-checked-button-color: *d-acc
+      switch-checked-track-color: *d-acc
+      switch-unchecked-button-color: "#959EAB"
+      switch-unchecked-track-color: "#3A424D"
+      slider-color: *d-acc
+      slider-bar-color: "rgba(158, 167, 238, 0.22)"
+      paper-slider-knob-color: *d-acc
+      paper-slider-active-color: *d-acc
+      paper-slider-container-color: "rgba(158, 167, 238, 0.22)"
+
+      # ---- Status colors ----
+      success-color: "#73C29C"
+      warning-color: "#E7B26C"
+      error-color: "#E8807C"
+      info-color: *d-acc
+
+      # ---- Entity states ----
+      state-icon-color: *d-sec
+      state-active-color: *d-acc
+      state-inactive-color: *d-dis
+      state-unavailable-color: *d-dis
+      state-light-active-color: "#E7B26C"
+      state-light-on-color: "#E7B26C"
+      state-climate-heat-color: "#E7B26C"
+      state-climate-cool-color: "#7FAAE0"
+      state-climate-auto-color: "#73C29C"
+      state-climate-heat_cool-color: "#73C29C"
+      state-climate-dry-color: "#D9BD72"
+      state-climate-fan_only-color: "#7FAAE0"
+      state-fan-active-color: *d-acc
+      state-switch-active-color: *d-acc
+      state-input_boolean-active-color: *d-acc
+      state-media_player-active-color: *d-acc
+      state-cover-active-color: *d-acc
+      state-lock-locked-color: "#73C29C"
+      state-lock-unlocked-color: "#E8807C"
+      state-lock-jammed-color: "#E8807C"
+      state-alarm_control_panel-armed_away-color: "#73C29C"
+      state-alarm_control_panel-disarmed-color: *d-sec
+      state-alarm_control_panel-triggered-color: "#E8807C"
+      state-binary_sensor-active-color: "#E7B26C"
+      state-person-home-color: "#73C29C"
+      state-person-not_home-color: *d-sec
+      state-sun-above_horizon-color: "#E7B26C"
+      state-sun-below_horizon-color: *d-acc
+      energy-grid-consumption-color: *d-acc
+      energy-solar-color: "#E7B26C"
+
+      # ---- Mushroom colors (RGB) ----
+      mush-rgb-state-entity: *d-acc-rgb
+      mush-rgb-state-light: "231, 178, 108"
+      mush-rgb-state-fan: *d-acc-rgb
+      mush-rgb-state-switch: *d-acc-rgb
+      mush-rgb-state-media-player: *d-acc-rgb
+      mush-rgb-state-cover: *d-acc-rgb
+      mush-rgb-state-climate-heat: "231, 178, 108"
+      mush-rgb-state-climate-cool: "127, 170, 224"
+      mush-rgb-state-lock-locked: "115, 194, 156"
+      mush-rgb-state-lock-unlocked: "232, 128, 124"
+      mush-rgb-state-person-home: "115, 194, 156"
+      mush-rgb-amber: "231, 178, 108"
+      mush-rgb-orange: "230, 150, 100"
+      mush-rgb-indigo: *d-acc-rgb
+      mush-rgb-blue: "127, 170, 224"
+      mush-rgb-green: "115, 194, 156"
+      mush-rgb-red: "232, 128, 124"
+      mush-rgb-disabled: "107, 115, 128"
+      mush-chip-background: *d-card
