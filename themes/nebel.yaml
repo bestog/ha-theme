@@ -54,6 +54,21 @@ Nebel:
   mush-subtitle-font-size: "14px"
   mush-subtitle-font-weight: "500"
 
+  # ---------- card-mod layer (requires card-mod from HACS) ----------
+  # Applies only CSS that can't be set through variables. Without card-mod
+  # this block is simply ignored and the theme still works.
+  card-mod-theme: Nebel
+  card-mod-card: |
+    ha-card {
+      font-variant-numeric: tabular-nums;          /* digits don't jump when values change */
+      transition: background-color 180ms ease, box-shadow 180ms ease;
+    }
+    /* Tile card: active entities (light on, heating, open window ...)
+       get a soft tint of their state color */
+    ha-card.active {
+      background: color-mix(in srgb, var(--tile-color) 9%, var(--ha-card-background, var(--card-background-color)));
+    }
+
   modes:
     # =======================================================================
     # LIGHT
@@ -183,6 +198,16 @@ Nebel:
       mush-rgb-disabled: "163, 172, 184"
       mush-chip-background: *l-card
 
+      # ---- Graph colors (statistics/history graphs, in series order) ----
+      graph-color-1: *l-acc            # indigo
+      graph-color-2: "#BA7E34"         # amber
+      graph-color-3: "#4A9A78"         # green
+      graph-color-4: "#C9605B"         # brick red
+      graph-color-5: "#5B8DC9"         # sky blue
+      graph-color-6: "#8E6AC8"         # violet
+      graph-color-7: "#7A8A99"         # slate gray
+      graph-color-8: "#B5658F"         # rose
+
     # =======================================================================
     # DARK
     # =======================================================================
@@ -310,3 +335,13 @@ Nebel:
       mush-rgb-red: "232, 128, 124"
       mush-rgb-disabled: "107, 115, 128"
       mush-chip-background: *d-card
+
+      # ---- Graph colors ----
+      graph-color-1: *d-acc
+      graph-color-2: "#E7B26C"
+      graph-color-3: "#73C29C"
+      graph-color-4: "#E8807C"
+      graph-color-5: "#7FAAE0"
+      graph-color-6: "#B79BEA"
+      graph-color-7: "#A3AFBC"
+      graph-color-8: "#D99ABA"

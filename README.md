@@ -34,6 +34,14 @@ To load it:
 
 (Requires "Advanced mode" in your user profile.)
 
+## card-mod (optional, recommended)
+With [card-mod](https://github.com/thomasloven/lovelace-card-mod) (HACS) the theme also applies
+styles that variables can't express:
+- **Active tiles** (light on, heating running, window open …) get a soft tint of their state color.
+- **Tabular figures**: values like temperatures don't jump in width when they change.
+
+Without card-mod these extras are skipped and everything else still works.
+
 ## Customizing
 All main colors sit at the top of each mode in `themes/nebel.yaml`, marked with
 `# ---- Palette (customize here) ----`. Values with `&name` are reused throughout
