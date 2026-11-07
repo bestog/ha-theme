@@ -1,0 +1,415 @@
+# ---------------------------------------------------------------------------
+# Hausmeister: a friendly, everyday-tech Home Assistant theme
+#   light: warm off-white, white cards with a fine line, charcoal ink
+#   dark ("Nachtschicht"): charcoal with amber
+#   amber = light & warmth · teal = all good · red = attention
+#
+# Built on Home Assistant's own means: theme variables plus a small card-mod
+# layer (HACS) for what variables can't do. System UI font, no extra loading.
+#
+# Customize: the main colors sit at the top of each mode (YAML anchors
+# &name / *name). Change them there and the change carries through.
+# ---------------------------------------------------------------------------
+
+Hausmeister:
+  # ---------- Shared settings (independent of mode) ----------
+  primary-font-family: &font "ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif"
+  paper-font-common-base_-_font-family: *font
+  paper-font-body1_-_font-family: *font
+  mdc-typography-font-family: *font
+  ha-font-family-body: *font
+  ha-font-family-heading: *font
+
+  # Shapes: 14px cards with a fine line, rounded-square icon tiles, pill badges
+  ha-card-border-radius: "14px"
+  ha-card-border-width: "1px"
+  ha-dialog-border-radius: "20px"
+  mdc-shape-small: "10px"
+  mdc-shape-medium: "14px"
+  mdc-shape-large: "20px"
+  ha-badge-border-radius: "999px"
+  ha-tile-icon-border-radius: "11px"
+
+  # Headings: bold and confident, subtitles calm
+  ha-heading-card-title-font-size: "20px"
+  ha-heading-card-title-font-weight: "800"
+  ha-heading-card-title-line-height: "26px"
+  ha-heading-card-subtitle-font-size: "14px"
+  ha-heading-card-subtitle-font-weight: "600"
+
+  # Tiles: the value (temperature, state) leads, the name supports it.
+  # 16px + 20px lines fit a 1-row tile.
+  ha-tile-info-primary-font-size: "13px"
+  ha-tile-info-primary-font-weight: "500"
+  ha-tile-info-primary-line-height: "16px"
+  ha-tile-info-secondary-font-size: "15px"
+  ha-tile-info-secondary-font-weight: "700"
+  ha-tile-info-secondary-line-height: "20px"
+  ha-tile-info-secondary-letter-spacing: "0px"
+
+  # ---------- card-mod layer (requires card-mod from HACS) ----------
+  # Without card-mod this block is ignored and the theme still works: active
+  # tiles then show HA's tinted icon square instead of a filled one.
+  card-mod-theme: Hausmeister
+  card-mod-card-yaml: |
+    .: |
+      /* Active tiles: filled icon square with a charcoal symbol, like Ronny's face */
+      ha-card.active ha-tile-icon {
+        --tile-icon-opacity: 1;
+        --tile-icon-hover-opacity: 0.88;
+      }
+      ha-card.active ha-tile-icon ha-state-icon {
+        color: var(--hm-on-fill) !important;
+      }
+      /* Alarm states sit on dark red: light symbol for contrast */
+      ha-card.active ha-tile-icon[data-state="triggered"] ha-state-icon,
+      ha-card.active ha-tile-icon[data-state="jammed"] ha-state-icon {
+        color: var(--hm-on-alarm) !important;
+      }
+      /* Lights and heating glow in Ronny yellow */
+      ha-card.active ha-tile-icon[data-domain="light"],
+      ha-card.active ha-tile-icon[data-domain="climate"][data-state="heat"] {
+        --tile-icon-color: var(--hm-warm-fill);
+      }
+      /* Headings set tighter, values with even digits */
+      .content.title { letter-spacing: -0.02em !important; }
+      ha-card { font-variant-numeric: tabular-nums; }
+    # Aufgaben/Hinweise: ha-alert rows inside Markdown cards, Ronny style.
+    # Calm rows on the inset surface with a filled icon square; only errors
+    # get a red tint, so they stand out.
+    ha-markdown$: |
+      ha-markdown-element > p:first-child {
+        font-size: 15px;
+        margin: 0 0 10px;
+        color: var(--secondary-text-color);
+      }
+      ha-markdown-element > p:first-child strong {
+        color: var(--primary-text-color);
+        font-weight: 800;
+      }
+      ha-alert {
+        margin: 0 0 6px !important;
+        color: var(--hm-alert-text);
+        font-size: 13px;
+      }
+      ha-alert a {
+        color: var(--primary-text-color);
+        font-weight: 600;
+      }
+    ha-markdown $ ha-alert $: |
+      .issue-type {
+        padding: 10px 12px;
+        border-radius: 12px;
+        align-items: center;
+        background: var(--secondary-background-color);
+      }
+      .issue-type::after { border-radius: 12px; opacity: 0; }
+      .issue-type.error { background: transparent; }
+      .issue-type.error::after { opacity: 0.12; }
+      .icon {
+        width: 32px !important;
+        height: 32px !important;
+        flex: none;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        background: currentColor;
+      }
+      .icon ha-svg-icon { color: var(--hm-on-fill); --mdc-icon-size: 20px; }
+      .issue-type.error .icon ha-svg-icon { color: var(--hm-on-alarm); }
+      .main-content { margin-inline-start: 12px; }
+      .title { margin-top: 0; color: var(--primary-text-color); font-size: 14px; }
+
+  modes:
+    # =======================================================================
+    # LIGHT: "Hausmeister"
+    # =======================================================================
+    light:
+      # ---- Palette (customize here) ----
+      primary-background-color: &l-bg "#FAFAF7"      # warm off-white page
+      card-background-color: &l-card "#FFFFFF"
+      primary-text-color: &l-ink "#16181D"           # charcoal
+      secondary-text-color: &l-sec "#6A707C"
+      divider-color: &l-line "#E4E2DA"               # the fine card line
+      primary-color: *l-ink                          # buttons/switches: charcoal, like the reference
+      accent-color: &l-amber-ink "#B97A12"
+      # amber (light, warmth) #B97A12 · teal (all good) #1F8C80
+      # red (attention: open, warning) #D9534A · alarm #A8322B · blue #3B6FE0
+
+      rgb-primary-color: "22, 24, 29"
+      rgb-accent-color: "185, 122, 18"
+      rgb-primary-text-color: "22, 24, 29"
+      rgb-secondary-text-color: "106, 112, 124"
+      rgb-card-background-color: "255, 255, 255"
+      rgb-primary-background-color: "250, 250, 247"
+
+      # ---- Surfaces ----
+      secondary-background-color: &l-inset "#F1F0EB"
+      ha-card-background: *l-card
+      ha-card-border-color: *l-line
+      ha-card-box-shadow: "0 1px 3px rgba(22, 24, 29, 0.06)"
+      lovelace-background: *l-bg
+      paper-card-background-color: *l-card
+      paper-dialog-background-color: *l-card
+      ha-dialog-surface-background: *l-card
+      mdc-theme-surface: *l-card
+      paper-listbox-background-color: *l-card
+      markdown-code-background-color: *l-inset
+      table-row-background-color: *l-card
+      table-row-alternative-background-color: "#F7F6F2"
+      input-fill-color: *l-inset
+      input-disabled-fill-color: *l-inset
+
+      # ---- Text ----
+      text-primary-color: *l-bg                      # text on charcoal buttons
+      disabled-text-color: &l-dis "#A6A9B0"
+      primary-text-on-background-color: *l-ink
+      paper-item-icon-color: *l-sec
+      mdc-theme-primary: *l-ink
+      mdc-theme-on-primary: *l-bg
+      ha-heading-card-title-color: *l-ink
+      ha-heading-card-subtitle-color: *l-sec
+      ha-tile-info-primary-color: *l-sec
+      ha-tile-info-secondary-color: *l-ink
+      hm-on-fill: *l-ink                             # card-mod: symbol on filled icon tiles
+      hm-warm-fill: "#F5B544"                        # card-mod: Ronny yellow for light & heating
+      hm-on-alarm: "#FFFFFF"                         # card-mod: symbol on alarm red
+      hm-alert-text: "#5E646F"                       # card-mod: detail text on alert rows (4.5:1 on inset)
+      ha-alert-padding: "10px 12px"
+
+      # ---- Header & sidebar ----
+      app-header-background-color: *l-bg
+      app-header-text-color: *l-ink
+      app-header-edit-background-color: "#ECEBE5"
+      app-header-edit-text-color: *l-ink
+      sidebar-background-color: "#F4F3EE"
+      sidebar-text-color: *l-sec
+      sidebar-icon-color: *l-sec
+      sidebar-selected-background-color: "#E9E7E0"
+      sidebar-selected-icon-color: *l-ink
+      sidebar-selected-text-color: *l-ink
+
+      # ---- Controls ----
+      switch-checked-color: *l-ink
+      switch-checked-button-color: *l-card
+      switch-checked-track-color: *l-ink
+      switch-unchecked-button-color: *l-card
+      switch-unchecked-track-color: "#CFCCC3"
+      slider-color: *l-ink
+      slider-bar-color: "rgba(22, 24, 29, 0.14)"
+      paper-slider-knob-color: *l-ink
+      paper-slider-active-color: *l-ink
+      paper-slider-container-color: "rgba(22, 24, 29, 0.14)"
+
+      # ---- Status colors ----
+      success-color: &l-teal "#1F8C80"
+      warning-color: &l-red "#D9534A"                # attention: open, warning
+      error-color: &l-alarm "#A8322B"
+      info-color: &l-blue "#3B6FE0"
+      rgb-success-color: "31, 140, 128"
+      rgb-warning-color: "217, 83, 74"
+      rgb-error-color: "168, 50, 43"
+
+      # ---- HA named colors (color: orange/red/... in dashboards) ----
+      amber-color: *l-amber-ink
+      yellow-color: *l-amber-ink
+      orange-color: *l-red                           # e.g. open windows in the dashboard
+      deep-orange-color: *l-red
+      red-color: *l-alarm
+      green-color: *l-teal
+      teal-color: *l-teal
+      blue-color: *l-blue
+      indigo-color: *l-blue
+      purple-color: "#7A55C7"
+
+      # ---- Entity states (tile card, icons, badges) ----
+      state-icon-color: *l-sec
+      state-active-color: *l-blue
+      state-inactive-color: *l-dis
+      state-unavailable-color: *l-dis
+      state-light-active-color: *l-amber-ink         # light = amber
+      state-light-on-color: *l-amber-ink
+      state-climate-heat-color: *l-amber-ink
+      state-climate-cool-color: *l-blue
+      state-climate-auto-color: *l-teal
+      state-climate-heat_cool-color: *l-teal
+      state-climate-dry-color: *l-amber-ink
+      state-climate-fan_only-color: *l-blue
+      state-fan-active-color: *l-blue
+      state-switch-active-color: *l-blue
+      state-input_boolean-active-color: *l-blue
+      state-media_player-active-color: *l-blue
+      state-cover-active-color: *l-blue
+      state-binary_sensor-active-color: *l-blue
+      state-binary_sensor-window-on-color: *l-red
+      state-binary_sensor-door-on-color: *l-red
+      state-binary_sensor-opening-on-color: *l-red
+      state-binary_sensor-garage_door-on-color: *l-red
+      state-lock-locked-color: *l-teal
+      state-lock-unlocked-color: *l-red
+      state-lock-jammed-color: *l-alarm
+      state-alarm_control_panel-armed_away-color: *l-teal
+      state-alarm_control_panel-disarmed-color: *l-sec
+      state-alarm_control_panel-triggered-color: *l-alarm
+      state-person-home-color: *l-teal
+      state-person-not_home-color: *l-sec
+      state-sun-above_horizon-color: *l-amber-ink
+      state-sun-below_horizon-color: *l-blue
+      energy-grid-consumption-color: *l-blue
+      energy-solar-color: *l-amber-ink
+
+      # ---- Graph colors (statistics/history graphs, in series order) ----
+      graph-color-1: *l-blue
+      graph-color-2: *l-amber-ink
+      graph-color-3: *l-teal
+      graph-color-4: "#7A55C7"         # violet
+      graph-color-5: "#C2577F"         # rose
+      graph-color-6: "#3E8E95"         # petrol
+      graph-color-7: "#8A8F99"         # gray (e.g. outside)
+      graph-color-8: "#6B8E23"         # olive
+
+    # =======================================================================
+    # DARK: "Nachtschicht"
+    # =======================================================================
+    dark:
+      # ---- Palette (customize here) ----
+      primary-background-color: &d-bg "#16181D"      # charcoal
+      card-background-color: &d-card "#20232A"
+      primary-text-color: &d-ink "#F2F1EC"
+      secondary-text-color: &d-sec "#9AA0AA"
+      divider-color: &d-line "#2C3038"
+      primary-color: &d-amber "#F5B544"              # amber glows at night
+      accent-color: *d-amber
+      # amber #F5B544 · teal #3CC4B4 · red #EF6A5F · alarm #FF5247 · blue #6F97F2
+
+      rgb-primary-color: "245, 181, 68"
+      rgb-accent-color: "245, 181, 68"
+      rgb-primary-text-color: "242, 241, 236"
+      rgb-secondary-text-color: "154, 160, 170"
+      rgb-card-background-color: "32, 35, 42"
+      rgb-primary-background-color: "22, 24, 29"
+
+      # ---- Surfaces ----
+      secondary-background-color: &d-inset "#262A32"
+      ha-card-background: *d-card
+      ha-card-border-color: *d-line
+      ha-card-box-shadow: "none"                     # no glow at night
+      lovelace-background: *d-bg
+      paper-card-background-color: *d-card
+      paper-dialog-background-color: *d-card
+      ha-dialog-surface-background: *d-card
+      mdc-theme-surface: *d-card
+      paper-listbox-background-color: *d-card
+      markdown-code-background-color: *d-inset
+      table-row-background-color: *d-card
+      table-row-alternative-background-color: "#242730"
+      input-fill-color: *d-inset
+      input-disabled-fill-color: *d-inset
+
+      # ---- Text ----
+      text-primary-color: *d-bg                      # charcoal text on amber
+      disabled-text-color: &d-dis "#6B717C"
+      primary-text-on-background-color: *d-ink
+      paper-item-icon-color: *d-sec
+      mdc-theme-primary: *d-amber
+      mdc-theme-on-primary: *d-bg
+      ha-heading-card-title-color: *d-ink
+      ha-heading-card-subtitle-color: *d-sec
+      ha-tile-info-primary-color: *d-sec
+      ha-tile-info-secondary-color: *d-ink
+      hm-on-fill: *d-bg
+      hm-warm-fill: *d-amber
+      hm-on-alarm: *d-bg
+      hm-alert-text: *d-sec
+      ha-alert-padding: "10px 12px"
+
+      # ---- Header & sidebar ----
+      app-header-background-color: *d-bg
+      app-header-text-color: *d-ink
+      app-header-edit-background-color: *d-inset
+      app-header-edit-text-color: *d-ink
+      sidebar-background-color: "#121418"
+      sidebar-text-color: *d-sec
+      sidebar-icon-color: *d-sec
+      sidebar-selected-background-color: "rgba(245, 181, 68, 0.12)"
+      sidebar-selected-icon-color: *d-amber
+      sidebar-selected-text-color: *d-amber
+
+      # ---- Controls ----
+      switch-checked-color: *d-amber
+      switch-checked-button-color: *d-amber
+      switch-checked-track-color: *d-amber
+      switch-unchecked-button-color: *d-sec
+      switch-unchecked-track-color: "#3A3F48"
+      slider-color: *d-amber
+      slider-bar-color: "rgba(245, 181, 68, 0.22)"
+      paper-slider-knob-color: *d-amber
+      paper-slider-active-color: *d-amber
+      paper-slider-container-color: "rgba(245, 181, 68, 0.22)"
+
+      # ---- Status colors ----
+      success-color: &d-teal "#3CC4B4"
+      warning-color: &d-red "#EF6A5F"
+      error-color: &d-alarm "#FF5247"
+      info-color: &d-blue "#6F97F2"
+      rgb-success-color: "60, 196, 180"
+      rgb-warning-color: "239, 106, 95"
+      rgb-error-color: "255, 82, 71"
+
+      # ---- HA named colors ----
+      amber-color: *d-amber
+      yellow-color: *d-amber
+      orange-color: *d-red
+      deep-orange-color: *d-red
+      red-color: *d-alarm
+      green-color: *d-teal
+      teal-color: *d-teal
+      blue-color: *d-blue
+      indigo-color: *d-blue
+      purple-color: "#A98BF0"
+
+      # ---- Entity states ----
+      state-icon-color: *d-sec
+      state-active-color: *d-blue
+      state-inactive-color: *d-dis
+      state-unavailable-color: *d-dis
+      state-light-active-color: *d-amber
+      state-light-on-color: *d-amber
+      state-climate-heat-color: *d-amber
+      state-climate-cool-color: *d-blue
+      state-climate-auto-color: *d-teal
+      state-climate-heat_cool-color: *d-teal
+      state-climate-dry-color: *d-amber
+      state-climate-fan_only-color: *d-blue
+      state-fan-active-color: *d-blue
+      state-switch-active-color: *d-blue
+      state-input_boolean-active-color: *d-blue
+      state-media_player-active-color: *d-blue
+      state-cover-active-color: *d-blue
+      state-binary_sensor-active-color: *d-blue
+      state-binary_sensor-window-on-color: *d-red
+      state-binary_sensor-door-on-color: *d-red
+      state-binary_sensor-opening-on-color: *d-red
+      state-binary_sensor-garage_door-on-color: *d-red
+      state-lock-locked-color: *d-teal
+      state-lock-unlocked-color: *d-red
+      state-lock-jammed-color: *d-alarm
+      state-alarm_control_panel-armed_away-color: *d-teal
+      state-alarm_control_panel-disarmed-color: *d-sec
+      state-alarm_control_panel-triggered-color: *d-alarm
+      state-person-home-color: *d-teal
+      state-person-not_home-color: *d-sec
+      state-sun-above_horizon-color: *d-amber
+      state-sun-below_horizon-color: *d-blue
+      energy-grid-consumption-color: *d-blue
+      energy-solar-color: *d-amber
+
+      # ---- Graph colors ----
+      graph-color-1: *d-blue
+      graph-color-2: *d-amber
+      graph-color-3: *d-teal
+      graph-color-4: "#A98BF0"
+      graph-color-5: "#F08CBC"
+      graph-color-6: "#5FB7BE"
+      graph-color-7: "#7C838E"
+      graph-color-8: "#A9C46A"
