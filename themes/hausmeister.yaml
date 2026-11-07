@@ -4,8 +4,8 @@
 #   dark ("Nachtschicht"): charcoal with amber
 #   amber = light & warmth · teal = all good · red = attention
 #
-# Native only: plain theme variables, no card-mod, no extra fonts
-# (system UI font, like the reference design).
+# Built on Home Assistant's own means: theme variables plus a small card-mod
+# layer (HACS) for what variables can't do. System UI font, no extra loading.
 #
 # Customize: the main colors sit at the top of each mode (YAML anchors
 # &name / *name). Change them there and the change carries through.
@@ -46,6 +46,33 @@ Hausmeister:
   ha-tile-info-secondary-font-weight: "700"
   ha-tile-info-secondary-line-height: "20px"
   ha-tile-info-secondary-letter-spacing: "0px"
+
+  # ---------- card-mod layer (requires card-mod from HACS) ----------
+  # Without card-mod this block is ignored and the theme still works: active
+  # tiles then show HA's tinted icon square instead of a filled one.
+  card-mod-theme: Hausmeister
+  card-mod-card: |
+    /* Active tiles: filled icon square with a charcoal symbol, like Ronny's face */
+    ha-card.active ha-tile-icon {
+      --tile-icon-opacity: 1;
+      --tile-icon-hover-opacity: 0.88;
+    }
+    ha-card.active ha-tile-icon ha-state-icon {
+      color: var(--hm-on-fill) !important;
+    }
+    /* Alarm states sit on dark red: light symbol for contrast */
+    ha-card.active ha-tile-icon[data-state="triggered"] ha-state-icon,
+    ha-card.active ha-tile-icon[data-state="jammed"] ha-state-icon {
+      color: #FFFFFF !important;
+    }
+    /* Lights and heating glow in Ronny yellow */
+    ha-card.active ha-tile-icon[data-domain="light"],
+    ha-card.active ha-tile-icon[data-domain="climate"][data-state="heat"] {
+      --tile-icon-color: var(--hm-warm-fill);
+    }
+    /* Headings set tighter, values with even digits */
+    .content.title { letter-spacing: -0.02em !important; }
+    ha-card { font-variant-numeric: tabular-nums; }
 
   modes:
     # =======================================================================
@@ -98,6 +125,8 @@ Hausmeister:
       ha-heading-card-subtitle-color: *l-sec
       ha-tile-info-primary-color: *l-sec
       ha-tile-info-secondary-color: *l-ink
+      hm-on-fill: *l-ink                             # card-mod: symbol on filled icon tiles
+      hm-warm-fill: "#F5B544"                        # card-mod: Ronny yellow for light & heating
 
       # ---- Header & sidebar ----
       app-header-background-color: *l-bg
@@ -239,6 +268,8 @@ Hausmeister:
       ha-heading-card-subtitle-color: *d-sec
       ha-tile-info-primary-color: *d-sec
       ha-tile-info-secondary-color: *d-ink
+      hm-on-fill: *d-bg
+      hm-warm-fill: *d-amber
 
       # ---- Header & sidebar ----
       app-header-background-color: *d-bg

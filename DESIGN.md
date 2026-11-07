@@ -7,8 +7,9 @@ Varianten-Vergleich: `preview/hausmeister-varianten.html` (gewählt: 1 hell + 3 
 ## Grundhaltung
 - **Ein Hausmeister, kein Leitstand.** Ruhig, aufgeräumt, freundlich; Technik ist sichtbar
   verlässlich, aber nicht laut.
-- **Nur native Home-Assistant-Mittel.** Ausschließlich Theme-Variablen: kein card-mod, keine
-  geladenen Schriften, keine Spezialkarten. Das Theme überlebt jedes HA-Update.
+- **Alles innerhalb von Home Assistant.** Theme-Variablen plus eine kleine card-mod-Schicht (HACS)
+  für das, was Variablen nicht können. Keine eigene Web-App, keine geladenen Schriften,
+  keine Spezialkarten. Ohne card-mod funktioniert das Theme weiter, nur ohne gefüllte Icons.
 
 ## Farbe
 | Rolle | Hell („Hausmeister“) | Dunkel („Nachtschicht“) |
@@ -33,11 +34,15 @@ sind auf diese Palette gelegt. Kontrast geprüft: Text ≥ 4,5:1, Zustands-Icons
 - Überschriften (Heading-Karte) 20px in 800; in Kacheln führt der Wert (15px, 700),
   der Name steht leise darüber (13px, grau).
 
-## Grenzen der nativen Umsetzung
-- Gefüllte Icons (Ronnys gelbes Gesicht) gehen nicht: Die Tile-Karte setzt die 20-%-Deckkraft
-  des Icon-Hintergrunds fest. Aktiv heißt deshalb: getönte Fläche, farbiges Icon. Im Hellmodus
-  nutzt Amber darum das dunklere `#B97A12`, damit Icons lesbar bleiben.
-- Engere Laufweite für Überschriften ist per Theme nicht einstellbar.
+## card-mod-Schicht
+- **Gefüllte Icon-Kacheln wie Ronnys Gesicht:** Aktive Kacheln zeigen ein voll gefülltes
+  Quadrat mit Charcoal-Symbol. Licht und Heizen leuchten im Ronny-Gelb `#F5B544` (gezielt über
+  `data-domain` der Kachel); andere Zustände nutzen ihre Zustandsfarbe. Alarmzustände bekommen
+  ein weißes Symbol, weil Charcoal auf Alarmrot zu schwach wäre.
+- Überschriften mit engerer Laufweite (−0,02em), Werte mit gleich breiten Ziffern.
+- Warum card-mod: Die Tile-Karte setzt die 20-%-Deckkraft des Icon-Hintergrunds fest, per
+  Variable ist das nicht änderbar. Im Hellmodus bleibt Amber als Zustandsfarbe darum
+  `#B97A12` (lesbar als Icon auf Weiß); das Gelb gibt es nur als Füllung.
 
 ## Nutzungskontext
 - **Smartphone (Companion App)** und **Wandtablet**: gut lesbar aus Distanz, der Dunkelmodus ist

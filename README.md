@@ -4,9 +4,14 @@ A friendly, everyday-tech theme for Home Assistant. In light mode it uses a warm
 page with white cards and charcoal text; in dark mode ("Nachtschicht") it is charcoal with
 glowing amber. Amber marks light and warmth, teal means all good, red asks for attention.
 
-It is built **only from native theme variables**: no card-mod, no extra fonts, no custom cards.
-It works with the standard cards (Tile, Heading, Badges, Markdown, graphs) and follows the
-system's light/dark setting.
+It is built from Home Assistant's own means: theme variables plus a small
+[card-mod](https://github.com/thomasloven/lovelace-card-mod) layer, with no extra fonts and no
+custom cards. It works with the standard cards (Tile, Heading, Badges, Markdown, graphs) and
+follows the system's light/dark setting.
+
+**card-mod (recommended):** gives active tiles a filled icon square with a dark symbol (lights
+and heating in yellow), tighter headings and even digits. Without card-mod the theme still
+works; active tiles then show Home Assistant's tinted icon square.
 
 ## Installation
 
