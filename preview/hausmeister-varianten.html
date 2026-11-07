@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hausmeister-Richtungen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--page:#efeee9;--ink:#16181d;--muted:#6a707c}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#0f1013;--ink:#f2f1ec;--muted:#9aa0aa}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--ink);font-family:Inter,system-ui,sans-serif;padding:24px 16px 48px}
+  header.page{max-width:1240px;margin:0 auto 20px}
+  header.page h1{margin:0 0 6px;font-size:24px;letter-spacing:-.02em}
+  header.page p{margin:0;color:var(--muted);font-size:14px;line-height:1.5;max-width:70ch}
+  .grid{max-width:1240px;margin:0 auto;display:grid;gap:24px;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));align-items:stretch}
+  .opt{display:flex;flex-direction:column;gap:10px}
+  .meta b{font-size:17px;letter-spacing:-.01em}
+  .meta p{margin:4px 0 0;font-size:13px;color:var(--muted);line-height:1.5}
+  .meta .feas{font-size:12px}
+  svg.ln{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  svg.px{shape-rendering:crispEdges}
+
+  /* ---------- base: Hausmeister ---------- */
+  .d{--bg:#fafaf7;--card:#fff;--line:#e4e2da;--ink:#16181d;--sec:#6a707c;--body:#3d424c;--amber:#f5b544;--amber-ink:#b97a12;
+     --teal:#2ba89a;--red:#d9534a;--blue:#3b6fe0;--violet:#8a63d2;--inset:#f1f0eb;
+     background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;padding:18px 16px 22px;flex:1;border-radius:18px;border:1px solid var(--line)}
+  .d .hello{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .d .hello .t1{font-size:24px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+  .d .hello .t2{font-size:13px;color:var(--sec)}
+  .d .eyebrow{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--amber-ink);margin-bottom:4px}
+  .d .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .d .chip{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:600;box-shadow:0 1px 3px rgba(22,24,29,.06)}
+  .d .dot{width:8px;height:8px;border-radius:50%;background:var(--teal);flex:none}
+  .d .status{display:flex;align-items:center;gap:10px;background:var(--inset);border-radius:12px;padding:12px 14px;font-weight:700;font-size:15px;margin-bottom:6px}
+  .d .status small{font-weight:500;color:var(--sec);font-size:12.5px;margin-left:auto}
+  .d h2{font-size:19px;font-weight:800;letter-spacing:-.025em;margin:18px 0 8px}
+  .d .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .d .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+  .d .t{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;min-height:60px;box-shadow:0 1px 3px rgba(22,24,29,.05)}
+  .d .t .ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--inset);color:var(--sec);flex:none}
+  .d .t .n{font-size:12.5px;color:var(--sec);font-weight:500}
+  .d .t .v{font-size:15.5px;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  .d .t.on .ic{background:var(--c);color:var(--onc,#16181d)}
+  .d .t.vert{flex-direction:column;justify-content:center;text-align:center;gap:6px}
+  .d .t.vert .n{color:var(--ink);font-weight:600}
+  .d .graph{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}
+  .d .graph svg{width:100%;height:80px;display:block}
+  .d .approve{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13.5px;font-weight:600;box-shadow:0 1px 3px rgba(22,24,29,.06)}
+  .d .approve .btn{margin-left:auto;background:var(--ink);color:var(--bg);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700}
+  .d .seg{display:inline-flex;background:var(--inset);border-radius:999px;padding:3px;margin-bottom:12px}
+  .d .seg span{padding:6px 12px;font-size:12.5px;font-weight:600;border-radius:999px;color:var(--sec)}
+  .d .seg span.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(22,24,29,.1)}
+
+  /* V2 Ampel: status dots instead of icon tiles */
+  .ampel .t .ic{width:auto;height:auto;background:none !important;border-radius:0}
+  .ampel .t .ic svg{display:none}
+  .ampel .t .ic::before{content:"";width:9px;height:9px;border-radius:50%;background:#c9c6bb}
+  .ampel .t.on .ic::before{background:var(--c)}
+  .ampel .t{min-height:54px}
+
+  /* V3 Nachtschicht */
+  .night{--bg:#16181d;--card:#20232a;--line:#2c3038;--ink:#f2f1ec;--sec:#9aa0aa;--body:#c9ccd2;--inset:#262a32;--amber-ink:#f5b544;--teal:#3cc4b4;--red:#ef6a5f;--blue:#6f97f2}
+  .night .t,.night .chip,.night .graph,.night .approve{box-shadow:none}
+  .night .t.on{border-color:color-mix(in srgb,var(--c) 40%,var(--line))}
+
+  /* V4 Farbkante */
+  .kante .sec{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:4px 12px 12px;margin-top:14px;border-top:3px solid var(--k);box-shadow:0 1px 3px rgba(22,24,29,.05)}
+  .kante .sec h2{margin:10px 0 8px;font-size:17px}
+  .kante .t{background:var(--bg);box-shadow:none}
+
+  /* V5 Ronny x Pixel */
+  .pixel .t .ic{border-radius:8px}
+  .pixel .t.on .ic{box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
+  .bot{width:44px;height:44px;flex:none}
+</style>
+</head>
+<body>
+<header class="page">
+  <h1>Fünf Varianten in Ronny-Richtung</h1>
+  <p>Freundliche Alltags-Technik: warmes Off-White, Charcoal, Amber als Signatur, Teal-Punkte für „alles gut“, fette Überschriften, Pill-Elemente. Jede Variante zeigt deine echte Übersicht.</p>
+</header>
+<main class="grid" id="grid"></main>
+<script>
+const I={
+ bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
+ thermo:'<path d="M10 13.5V5a2 2 0 1 1 4 0v8.5a4 4 0 1 1-4 0z"/><path d="M12 9v6"/>',
+ window:'<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M12 4v16M4 12h16"/>',
+ door:'<path d="M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17M4 21h16"/><path d="M14.5 12h.01"/>',
+ sofa:'<path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M3 12a2 2 0 0 1 4 0v2h10v-2a2 2 0 0 1 4 0v5H3z"/><path d="M5 17v2M19 17v2"/>',
+ laptop:'<rect x="5" y="5" width="14" height="10" rx="1"/><path d="M2 19h20"/>',
+ palm:'<path d="M12 21V11"/><path d="M12 11c-2.5-3.5-6-3-7.5-1M12 11c2.5-3.5 6-3 7.5-1M12 11c-.5-3.5 1.5-6 4.5-6M12 11c.5-3.5-1.5-6-4.5-6"/>',
+ lamp:'<path d="M8 3h8l3 7H5z"/><path d="M12 10v9M8 21h8"/>'
+};
+const P={
+ bulb:["..XXXXX..",".X.....X.","X.......X","X.......X","X.......X",".X.....X.","..X...X..","..XXXXX..","..X...X..","...XXX..."],
+ thermo:["...XXX...","...X.X...","...X.X...","...XXX...","...XXX...","...XXX...","..XXXXX..","..XXXXX..","...XXX..."],
+ window:["XXXXXXXXX","X...X...X","X...X...X","XXXXXXXXX","X...X...X","X...X...X","XXXXXXXXX"],
+ door:["XXXXXX...","X....XX..","X....X.X.","X....X.X.","X..X.X.X.","X....X.X.","X....X.X.","X....XX..","XXXXXX..."],
+ sofa:[".XXXXXXX.",".X.....X.","XXXXXXXXX","X.......X","XXXXXXXXX","X.......X"],
+ laptop:[".XXXXXXX.",".X.....X.",".X.....X.",".X.....X.",".XXXXXXX.","XXXXXXXXX"],
+ palm:[".XX.XX.","XXXXXXX","X..X..X","...X...","...X...","..XXX.."],
+ lamp:["..XXXXX..",".XXXXXXX.","XXXXXXXXX","....X....","....X....","....X....","..XXXXX.."]
+};
+const ln=n=>`<svg class="ln" viewBox="0 0 24 24">${I[n]}</svg>`;
+const px=n=>{const g=P[n],h=g.length,w=g[0].length;let r="";g.forEach((row,y)=>[...row].forEach((c,x)=>{if(c==="X")r+=`<rect x="${x}" y="${y}" width="1" height="1"/>`}));return `<svg class="px" viewBox="0 0 ${w} ${h}" width="${w*2}" height="${h*2}" fill="currentColor">${r}</svg>`};
+const bot=`<svg class="bot px" viewBox="0 0 16 16"><rect x="7" y="0" width="2" height="2" fill="#2ba89a"/><rect x="7.5" y="2" width="1" height="2" fill="#b97a12"/><rect x="2" y="4" width="12" height="11" fill="#f5b544"/><rect x="1" y="5" width="14" height="9" fill="#f5b544"/><rect x="3" y="6" width="10" height="6" fill="#16181d"/><rect x="5" y="8" width="2" height="2" fill="#f5b544"/><rect x="9" y="8" width="2" height="2" fill="#f5b544"/><rect x="6" y="11" width="4" height="1" fill="#f5b544"/></svg>`;
+
+function dash(v){
+  const ic=v.pixel?px:ln;
+  const T=(o)=>`<div class="t ${o.on?"on":""} ${o.vert?"vert":""}" style="--c:${o.c||"var(--amber)"};${o.onc?`--onc:${o.onc}`:""}"><div class="ic">${ic(o.i)}</div><div><div class="n">${o.n}</div>${o.v?`<div class="v">${o.v}</div>`:""}</div></div>`;
+  const RED="var(--red)", AM="var(--amber)", TE="var(--teal)", BL="var(--blue)";
+  const step=(s,c)=>{let p=[],y=40+s*4;for(let x=0;x<=300;x+=15){y+=((Math.sin(x/37+s)*6)|0);y=Math.max(10,Math.min(72,y));p.push(`${x},${y}`)};return `<polyline points="${p.join(" ")}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`};
+  const graph=`<div class="graph"><svg viewBox="0 0 300 80" preserveAspectRatio="none">${v.graph.map((c,i)=>step(i,c)).join("")}</svg></div>`;
+  const S={
+    fenster:["Fenster &amp; Türen","var(--red)",`<div class="row">${T({i:"window",n:"Küche",v:"Offen",on:1,c:RED,onc:"#fff"})}${T({i:"door",n:"Kellertür",v:"Offen",on:1,c:RED,onc:"#fff"})}</div>`],
+    klima:["Raumklima","var(--teal)",`<div class="row">${T({i:"thermo",n:"Wohnzimmer",v:"21,5 °C",on:1,c:AM})}${T({i:"thermo",n:"Küche",v:"20,1 °C"})}${T({i:"thermo",n:"Schlafzimmer",v:"18,0 °C"})}${T({i:"thermo",n:"Kinderzimmer",v:"20,8 °C",on:1,c:AM})}</div>`],
+    licht:["Licht","var(--amber)",`<div class="row">${T({i:"bulb",n:"Wohnzimmer",v:"An · 70 %",on:1,c:AM})}${T({i:"bulb",n:"Couch",v:"Aus"})}${T({i:"lamp",n:"Lampe",v:"An",on:1,c:BL,onc:"#fff"})}${T({i:"bulb",n:"Loggia",v:"Aus"})}</div><div class="row3">${T({i:"sofa",n:"Relax",vert:1})}${T({i:"laptop",n:"Work",vert:1})}${T({i:"palm",n:"Urlaub",v:"Aus",vert:1})}</div>`],
+    graph:["Temperatur, 7 Tage","var(--violet)",graph]
+  };
+  const head = v.pixel
+   ? `<div class="hello">${bot}<div><div class="t1">Guten Abend</div><div class="t2">Ronny passt auf. 2 Dinge brauchen dich.</div></div></div>`
+   : `<div class="eyebrow">Samstag, 7. November</div><div class="hello"><div><div class="t1">Guten Abend</div><div class="t2">2 Dinge brauchen dich, der Rest läuft.</div></div></div>`;
+  const chips=`<div class="chips"><span class="chip"><span class="dot"></span>Alle zu Hause</span><span class="chip">8 °C bewölkt</span><span class="chip"><span class="dot" style="background:var(--red)"></span>Fenster offen</span></div>`;
+  const status=`<div class="status"><span class="dot" style="background:var(--amber)"></span>2 Hinweise<small>Batterie Bad 14 %</small></div>`;
+  const approve=`<div class="approve">Küchenfenster seit 12 Min. offen. Heizung pausieren?<span class="btn">Ja</span></div>`;
+  const seg = v.seg?`<div class="seg"><span class="on">Übersicht</span><span>Klima</span><span>Geräte</span></div>`:"";
+  const order=["fenster","klima","licht","graph"];
+  const body = v.kante
+    ? order.map(k=>`<div class="sec" style="--k:${S[k][1]}"><h2>${S[k][0]}</h2>${S[k][2]}</div>`).join("")
+    : order.map(k=>`<h2>${S[k][0]}</h2>${S[k][2]}`).join("");
+  return `<div class="d ${v.cls}">${seg}${head}${chips}${status}${approve}${body}</div>`;
+}
+const G1=["#3b6fe0","#f5b544","#2ba89a","#d9534a","#8a63d2","#e27aa8","#9aa0aa"];
+const V=[
+ {cls:"",name:"1 · Hausmeister",seg:1,desc:"Am nächsten an der Referenz: Off-White, weiße Karten mit feiner Linie, Charcoal-Schrift, Amber füllt aktive Icons wie Ronnys Gesicht. Offene Fenster rot mit weißem Icon.",feas:"Fast komplett per Theme. card-mod nur für eckig-runde Icon-Kacheln (11px statt Kreis) und die feine Kartenlinie.",graph:G1},
+ {cls:"ampel",name:"2 · Ampel",desc:"Wie Ronnys „All good“-Karte: statt Icon-Kreisen nur farbige Punkte, alles wird zur ruhigen Statusliste. Sehr aufgeräumt, am stärksten auf „ist alles okay?“ optimiert.",feas:"Punkte statt Icons brauchen card-mod (Icon ausblenden, Punkt zeichnen). Theme allein: Farben/Schrift.",graph:G1},
+ {cls:"night",name:"3 · Nachtschicht",desc:"Ronnys dunkle Film-Sektion als Dashboard: Charcoal, Amber leuchtet, Teal für „läuft“. Idealer Dunkelmodus zu Variante 1, nachts am Wandtablet.",feas:"Komplett per Theme (als Dark-Mode von 1 oder 2).",graph:["#6f97f2","#f5b544","#3cc4b4","#ef6a5f","#a98bf0","#f08cbc","#7c838e"]},
+ {cls:"kante",kante:1,name:"4 · Farbkante",desc:"Wie „Where the data stays“: jede Gruppe ist eine Karte mit farbiger Oberkante (Rot = Fenster, Teal = Klima, Amber = Licht). Orientierung über Farbe statt Text.",feas:"Farbkanten pro Bereich brauchen eine kleine Dashboard-Änderung (Sektions-Hintergrund + card-mod je Sektion), nicht nur das Theme.",graph:G1},
+ {cls:"pixel",name:"5 · Ronny × Pixel",desc:"Variante 1 plus dein Pixel-Wunsch: Pixel-Icons und ein kleiner Pixel-Roboter, der oben Bescheid sagt. Freundlich, mit Augenzwinkern.",feas:"Pixel-Icons per eigenem Icon-Set (custom icons Ressource), Roboter als Bild in der Begrüßung. Rest per Theme.",graph:G1,pixel:1}
+];
+const grid=document.getElementById("grid");
+for(const v of V) grid.insertAdjacentHTML("beforeend",`<section class="opt"><div class="meta"><b>${v.name}</b><p>${v.desc}</p><p class="feas">${v.feas}</p></div>${dash(v)}</section>`);
+</script>
+</body>
+</html>
