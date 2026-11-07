@@ -95,7 +95,28 @@ Hausmeister:
       ha-alert a {
         color: var(--primary-text-color);
         font-weight: 600;
+        text-underline-offset: 2px;
+        text-decoration-thickness: 1px;
       }
+      /* "N weitere": native <details> as a pill */
+      details summary {
+        list-style: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-height: 36px;
+        padding: 0 14px;
+        margin: 2px 0 6px;
+        border-radius: 999px;
+        background: var(--secondary-background-color);
+        color: var(--primary-text-color);
+        font-size: 13px;
+        font-weight: 600;
+      }
+      details summary::-webkit-details-marker { display: none; }
+      details summary::before { content: "+"; font-weight: 800; }
+      details[open] summary::before { content: "–"; }
     ha-markdown $ ha-alert $: |
       .issue-type {
         padding: 10px 12px;

@@ -52,6 +52,15 @@ sind auf diese Palette gelegt. Kontrast geprüft: Text ≥ 4,5:1, Zustands-Icons
   Icon-Quadrat; nur **Fehler** bekommen eine rote Tönung und stechen heraus. Leer:
   „Alles gut“ mit Teal-Haken wie Ronnys „All good“-Leiste.
 - Detailtext eigene Farbe (`#5E646F` hell), damit er auf der Inset-Fläche 4,5:1 erreicht.
+- Ruhig statt Protokoll (nach der zweiten Kritik):
+  - Gleiches wird gebündelt („3 Batterien leer“, „2 Sensoren offline“), jeder Gerätename
+    verlinkt direkt aufs Gerät.
+  - Offene Fenster/Türen kommen erst nach **30 Minuten** in die Aufgaben; kurzes Lüften zeigen
+    Badge und Kachel allein.
+  - Zeitangaben auf Deutsch („seit 12 Min.“, „seit 3 Std.“, „seit gestern“) statt
+    `relative_time`, das immer Englisch liefert.
+  - Ab 5 Zeilen klappt der Rest nativ ein (`<details>` als Pill „+ N weitere“).
+  - Leere Batterien bleiben bewusst Fehler (Entscheidung des Nutzers).
 
 ## Nutzungskontext
 - **Smartphone (Companion App)** und **Wandtablet**: gut lesbar aus Distanz, der Dunkelmodus ist
