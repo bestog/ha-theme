@@ -51,28 +51,74 @@ Hausmeister:
   # Without card-mod this block is ignored and the theme still works: active
   # tiles then show HA's tinted icon square instead of a filled one.
   card-mod-theme: Hausmeister
-  card-mod-card: |
-    /* Active tiles: filled icon square with a charcoal symbol, like Ronny's face */
-    ha-card.active ha-tile-icon {
-      --tile-icon-opacity: 1;
-      --tile-icon-hover-opacity: 0.88;
-    }
-    ha-card.active ha-tile-icon ha-state-icon {
-      color: var(--hm-on-fill) !important;
-    }
-    /* Alarm states sit on dark red: light symbol for contrast */
-    ha-card.active ha-tile-icon[data-state="triggered"] ha-state-icon,
-    ha-card.active ha-tile-icon[data-state="jammed"] ha-state-icon {
-      color: #FFFFFF !important;
-    }
-    /* Lights and heating glow in Ronny yellow */
-    ha-card.active ha-tile-icon[data-domain="light"],
-    ha-card.active ha-tile-icon[data-domain="climate"][data-state="heat"] {
-      --tile-icon-color: var(--hm-warm-fill);
-    }
-    /* Headings set tighter, values with even digits */
-    .content.title { letter-spacing: -0.02em !important; }
-    ha-card { font-variant-numeric: tabular-nums; }
+  card-mod-card-yaml: |
+    .: |
+      /* Active tiles: filled icon square with a charcoal symbol, like Ronny's face */
+      ha-card.active ha-tile-icon {
+        --tile-icon-opacity: 1;
+        --tile-icon-hover-opacity: 0.88;
+      }
+      ha-card.active ha-tile-icon ha-state-icon {
+        color: var(--hm-on-fill) !important;
+      }
+      /* Alarm states sit on dark red: light symbol for contrast */
+      ha-card.active ha-tile-icon[data-state="triggered"] ha-state-icon,
+      ha-card.active ha-tile-icon[data-state="jammed"] ha-state-icon {
+        color: var(--hm-on-alarm) !important;
+      }
+      /* Lights and heating glow in Ronny yellow */
+      ha-card.active ha-tile-icon[data-domain="light"],
+      ha-card.active ha-tile-icon[data-domain="climate"][data-state="heat"] {
+        --tile-icon-color: var(--hm-warm-fill);
+      }
+      /* Headings set tighter, values with even digits */
+      .content.title { letter-spacing: -0.02em !important; }
+      ha-card { font-variant-numeric: tabular-nums; }
+    # Aufgaben/Hinweise: ha-alert rows inside Markdown cards, Ronny style.
+    # Calm rows on the inset surface with a filled icon square; only errors
+    # get a red tint, so they stand out.
+    ha-markdown$: |
+      ha-markdown-element > p:first-child {
+        font-size: 15px;
+        margin: 0 0 10px;
+        color: var(--secondary-text-color);
+      }
+      ha-markdown-element > p:first-child strong {
+        color: var(--primary-text-color);
+        font-weight: 800;
+      }
+      ha-alert {
+        margin: 0 0 6px !important;
+        color: var(--hm-alert-text);
+        font-size: 13px;
+      }
+      ha-alert a {
+        color: var(--primary-text-color);
+        font-weight: 600;
+      }
+    ha-markdown $ ha-alert $: |
+      .issue-type {
+        padding: 10px 12px;
+        border-radius: 12px;
+        align-items: center;
+        background: var(--secondary-background-color);
+      }
+      .issue-type::after { border-radius: 12px; opacity: 0; }
+      .issue-type.error { background: transparent; }
+      .issue-type.error::after { opacity: 0.12; }
+      .icon {
+        width: 32px !important;
+        height: 32px !important;
+        flex: none;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        background: currentColor;
+      }
+      .icon ha-svg-icon { color: var(--hm-on-fill); --mdc-icon-size: 20px; }
+      .issue-type.error .icon ha-svg-icon { color: var(--hm-on-alarm); }
+      .main-content { margin-inline-start: 12px; }
+      .title { margin-top: 0; color: var(--primary-text-color); font-size: 14px; }
 
   modes:
     # =======================================================================
@@ -127,6 +173,9 @@ Hausmeister:
       ha-tile-info-secondary-color: *l-ink
       hm-on-fill: *l-ink                             # card-mod: symbol on filled icon tiles
       hm-warm-fill: "#F5B544"                        # card-mod: Ronny yellow for light & heating
+      hm-on-alarm: "#FFFFFF"                         # card-mod: symbol on alarm red
+      hm-alert-text: "#5E646F"                       # card-mod: detail text on alert rows (4.5:1 on inset)
+      ha-alert-padding: "10px 12px"
 
       # ---- Header & sidebar ----
       app-header-background-color: *l-bg
@@ -270,6 +319,9 @@ Hausmeister:
       ha-tile-info-secondary-color: *d-ink
       hm-on-fill: *d-bg
       hm-warm-fill: *d-amber
+      hm-on-alarm: *d-bg
+      hm-alert-text: *d-sec
+      ha-alert-padding: "10px 12px"
 
       # ---- Header & sidebar ----
       app-header-background-color: *d-bg

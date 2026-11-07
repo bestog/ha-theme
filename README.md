@@ -31,6 +31,12 @@ works; active tiles then show Home Assistant's tinted icon square.
 ### Enabling it
 Profile → *Theme* → **Hausmeister**, mode *Auto*.
 
+## Task card ("Aufgaben")
+`dashboard/aufgaben-markdown.jinja` is the content of a Markdown card that lists what needs
+attention (offline sensors, empty batteries, open windows, plants, updates …) as `ha-alert`
+rows. With card-mod, the theme styles them as calm rows with filled icon squares; errors get a
+red tint. Paste it into a Markdown card and adjust the entity filters to your home.
+
 ## Customizing
 All main colors sit at the top of each mode in `themes/hausmeister.yaml`, marked with
 `# ---- Palette (customize here) ----`. Values with `&name` are reused throughout the file,

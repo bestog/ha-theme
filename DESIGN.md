@@ -44,6 +44,15 @@ sind auf diese Palette gelegt. Kontrast geprüft: Text ≥ 4,5:1, Zustands-Icons
   Variable ist das nicht änderbar. Im Hellmodus bleibt Amber als Zustandsfarbe darum
   `#B97A12` (lesbar als Icon auf Weiß); das Gelb gibt es nur als Füllung.
 
+## Aufgaben-Karte
+- Markdown-Karte mit Jinja-Logik (`dashboard/aufgaben-markdown.jinja`): oben ein Satz im
+  Ronny-Ton („**5 Dinge brauchen dich**, der Rest läuft.“), darunter je Punkt eine
+  `ha-alert`-Zeile mit Titel und Detail; ohne Emojis, das Icon zeigt die Schwere.
+- Gestaltung über card-mod im Theme: ruhige Zeilen auf der Inset-Fläche mit gefülltem
+  Icon-Quadrat; nur **Fehler** bekommen eine rote Tönung und stechen heraus. Leer:
+  „Alles gut“ mit Teal-Haken wie Ronnys „All good“-Leiste.
+- Detailtext eigene Farbe (`#5E646F` hell), damit er auf der Inset-Fläche 4,5:1 erreicht.
+
 ## Nutzungskontext
 - **Smartphone (Companion App)** und **Wandtablet**: gut lesbar aus Distanz, der Dunkelmodus ist
   nachts blendfrei.
