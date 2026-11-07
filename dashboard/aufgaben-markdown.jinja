@@ -1,76 +1,116 @@
-{#- Aufgaben: each item = [title, detail]; detail may contain a plain <a href> link -#}
-{%- set ns = namespace(e=[], w=[], i=[]) -%}
+{#- Aufgaben card (Markdown). Each item: [severity, title, detail].
+    Details may contain plain <a href> links. Same kinds of problems are bundled
+    into one row; after 5 rows the rest folds away in <details>. -#}
+{%- macro dauer(dt) -%}
+  {%- set m = ((now() - dt).total_seconds() / 60) | int -%}
+  {%- if m < 1 -%}gerade eben
+  {%- elif m < 60 -%}seit {{ m }} Min.
+  {%- elif m < 1440 -%}seit {{ (m / 60) | int }} Std.
+  {%- elif m < 2880 -%}seit gestern
+  {%- else -%}seit {{ (m / 1440) | int }} Tagen{%- endif -%}
+{%- endmacro -%}
+{%- macro geraet(entity_id, label) -%}
+  {%- set d = device_id(entity_id) -%}
+  {%- if d -%}<a href="/config/devices/device/{{ d }}">{{ label }}</a>{%- else -%}{{ label }}{%- endif -%}
+{%- endmacro -%}
+{%- set ns = namespace(items=[], offline=[], leer=[], schwach=[]) -%}
 {%- set skip = 'skoda|predicted|durchzug|fenster_und_turen' -%}
-{#- Errors -#}
+
+{#- ---- Errors ---- -#}
 {%- for s in states.binary_sensor
      | selectattr('attributes.device_class','defined')
-     | selectattr('attributes.device_class','in',['window','door','opening','moisture','smoke'])
+     | selectattr('attributes.device_class','in',['window','door','opening','garage_door','moisture','smoke'])
      | rejectattr('entity_id','search',skip)
      | selectattr('state','eq','unavailable') -%}
-  {%- set ns.e = ns.e + [[s.name | replace('LUMI lumi.sensor_wleak.aq1','Wassermelder Bad') | replace('unk_manufacturer lumi.sensor_wleak.aq1','Wassermelder Bad') ~ ' offline', 'Der Sensor meldet sich nicht mehr.']] -%}
+  {%- set n = s.name | replace('LUMI lumi.sensor_wleak.aq1','Wassermelder Bad') | replace('unk_manufacturer lumi.sensor_wleak.aq1','Wassermelder Bad') -%}
+  {%- set ns.offline = ns.offline + [geraet(s.entity_id, n)] -%}
 {%- endfor -%}
+{%- if ns.offline | count == 1 -%}
+  {%- set ns.items = ns.items + [['error', 'Sensor offline', ns.offline[0] ~ ' meldet sich nicht mehr.']] -%}
+{%- elif ns.offline | count > 1 -%}
+  {%- set ns.items = ns.items + [['error', ns.offline | count ~ ' Sensoren offline', ns.offline | join(', ')]] -%}
+{%- endif -%}
 {%- for s in states.climate | rejectattr('entity_id','search','skoda') | selectattr('state','in',['unavailable','unknown']) -%}
-  {%- set ns.e = ns.e + [['Heizung ' ~ s.name ~ ' nicht erreichbar', 'Thermostat und Funkverbindung prüfen.']] -%}
+  {%- set ns.items = ns.items + [['error', 'Heizung ' ~ s.name ~ ' nicht erreichbar', geraet(s.entity_id, 'Thermostat öffnen')]] -%}
 {%- endfor -%}
 {%- for s in states.binary_sensor | selectattr('attributes.device_class','defined') | selectattr('attributes.device_class','in',['moisture','smoke']) | selectattr('state','eq','on') -%}
-  {%- set ns.e = ns.e + [[s.name ~ ': Alarm', 'Bitte sofort nachsehen.']] -%}
+  {%- set ns.items = ns.items + [['error', s.name ~ ': Alarm', 'Bitte sofort nachsehen. ' ~ geraet(s.entity_id, 'Melder öffnen')]] -%}
 {%- endfor -%}
 {%- if is_state('binary_sensor.rpi_power_status','on') -%}
-  {%- set ns.e = ns.e + [['Stromversorgung instabil', 'Der Raspberry Pi bekommt zu wenig Strom.']] -%}
+  {%- set ns.items = ns.items + [['error', 'Stromversorgung instabil', 'Der Raspberry Pi bekommt zu wenig Strom. <a href="/config/hardware">Hardware ansehen</a>']] -%}
 {%- endif -%}
 {%- set bk = states('sensor.backup_last_successful_automatic_backup') | as_datetime(none) -%}
 {%- if bk is none or (now() - bk).total_seconds() > 172800 -%}
-  {%- set ns.e = ns.e + [['Kein Backup seit über 2 Tagen', '<a href="/config/backup">Backups öffnen</a>']] -%}
+  {%- set ns.items = ns.items + [['error', 'Kein Backup ' ~ (dauer(bk) if bk else 'vorhanden'), '<a href="/config/backup">Backups öffnen</a>']] -%}
 {%- endif -%}
-{#- Batteries: empty = error, low = warning -#}
+
+{#- ---- Batteries: empty = error, low = warning; bundled ---- -#}
 {%- for s in states.sensor | selectattr('attributes.device_class','defined') | selectattr('attributes.device_class','eq','battery') | rejectattr('entity_id','search','iphone|skoda|roborock|24h') | selectattr('state','is_number') -%}
   {%- set v = s.state | float -%}
-  {%- set n = (area_name(s.entity_id) ~ ' · ' if area_name(s.entity_id) else '') ~ s.name | replace(' Battery','') | replace('unk_manufacturer unk_model','Wassermelder') -%}
-  {%- if v <= 5 -%}{%- set ns.e = ns.e + [['Batterie leer', n ~ ' · ' ~ v | int ~ ' %']] -%}
-  {%- elif v < 20 -%}{%- set ns.w = ns.w + [['Batterie schwach', n ~ ' · ' ~ v | int ~ ' %']] -%}{%- endif -%}
+  {%- set n = s.name | replace(' Battery','') | replace('unk_manufacturer unk_model','Wassermelder') -%}
+  {%- set a = area_name(s.entity_id) -%}
+  {%- set label = n ~ (' (' ~ a ~ ')' if a else '') ~ ' ' ~ v | int ~ ' %' -%}
+  {%- if v <= 5 -%}{%- set ns.leer = ns.leer + [geraet(s.entity_id, label)] -%}
+  {%- elif v < 20 -%}{%- set ns.schwach = ns.schwach + [geraet(s.entity_id, label)] -%}{%- endif -%}
 {%- endfor -%}
-{#- Warnings -#}
+{%- if ns.leer -%}
+  {%- set ns.items = ns.items + [['error', ('Batterie leer' if ns.leer | count == 1 else ns.leer | count ~ ' Batterien leer'), ns.leer | join(', ')]] -%}
+{%- endif -%}
+{%- if ns.schwach -%}
+  {%- set ns.items = ns.items + [['warning', ('Batterie schwach' if ns.schwach | count == 1 else ns.schwach | count ~ ' Batterien schwach'), ns.schwach | join(', ')]] -%}
+{%- endif -%}
+
+{#- ---- Warnings ---- -#}
+{#- Windows/doors only once they are open longer than 30 minutes;
+    shorter airing is shown by the badge and the tiles. -#}
 {%- for s in states.binary_sensor
      | selectattr('attributes.device_class','defined')
      | selectattr('attributes.device_class','in',['window','door','opening','garage_door'])
      | rejectattr('entity_id','search',skip)
      | selectattr('state','eq','on') -%}
-  {%- set ns.w = ns.w + [[s.name ~ ' ist offen', 'seit ' ~ relative_time(s.last_changed)]] -%}
+  {%- if (now() - s.last_changed).total_seconds() > 1800 -%}
+    {%- set ns.items = ns.items + [['warning', s.name ~ ' ist offen', dauer(s.last_changed) ~ ' · Heizung im Blick behalten']] -%}
+  {%- endif -%}
 {%- endfor -%}
 {%- for s in states.sensor | selectattr('entity_id','search','_mold_risk_percentage$') | selectattr('state','is_number') -%}
-  {%- if s.state | float >= 70 -%}{%- set ns.w = ns.w + [['Schimmelrisiko ' ~ area_name(s.entity_id), s.state ~ ' % · bitte lüften']] -%}{%- endif -%}
+  {%- if s.state | float >= 70 -%}{%- set ns.items = ns.items + [['warning', 'Schimmelrisiko ' ~ area_name(s.entity_id), s.state ~ ' % · bitte lüften']] -%}{%- endif -%}
 {%- endfor -%}
-{%- for s in states.plant | selectattr('state','eq','problem') -%}
-  {%- set ns.w = ns.w + [[s.name ~ ' braucht Aufmerksamkeit', '<a href="/lovelace/pflanzen">Pflanzen ansehen</a>']] -%}
-{%- endfor -%}
+{%- set pflanzen = states.plant | selectattr('state','eq','problem') | map(attribute='name') | list -%}
+{%- if pflanzen -%}
+  {%- set ns.items = ns.items + [['warning', (pflanzen[0] ~ ' braucht' if pflanzen | count == 1 else pflanzen | join(' und ') ~ ' brauchen') ~ ' Aufmerksamkeit', '<a href="/lovelace/pflanzen">Pflanzen ansehen</a>']] -%}
+{%- endif -%}
 {%- if states('vacuum.roborock_s7') == 'error' -%}
-  {%- set ns.w = ns.w + [['Roborock meldet einen Fehler', '<a href="/lovelace/geraete">Geräte ansehen</a>']] -%}
+  {%- set ns.items = ns.items + [['warning', 'Roborock meldet einen Fehler', '<a href="/lovelace/geraete">Geräte ansehen</a>']] -%}
 {%- endif -%}
 {%- if is_state('binary_sensor.roborock_s7_water_shortage','on') -%}
-  {%- set ns.w = ns.w + [['Roborock: Wassertank auffüllen', 'Danach läuft die Reinigung weiter.']] -%}
+  {%- set ns.items = ns.items + [['warning', 'Roborock: Wassertank auffüllen', 'Danach läuft die Reinigung weiter.']] -%}
 {%- endif -%}
-{#- Hints -#}
+
+{#- ---- Hints ---- -#}
 {%- set upd = states.update | selectattr('state','eq','on') | list | count -%}
 {%- if upd > 0 -%}
-  {%- set ns.i = ns.i + [[upd ~ (' Update' if upd == 1 else ' Updates') ~ ' verfügbar', '<a href="/config/updates">Ansehen</a>']] -%}
+  {%- set ns.items = ns.items + [['info', upd ~ (' Update' if upd == 1 else ' Updates') ~ ' verfügbar', '<a href="/config/updates">Ansehen</a>']] -%}
 {%- endif -%}
 {%- set aoff = states.automation | selectattr('state','eq','off') | map(attribute='name') | list -%}
-{%- if aoff | count > 0 -%}
-  {%- set ns.i = ns.i + [[('Automation' if aoff | count == 1 else aoff | count ~ ' Automationen') ~ ' aus', aoff | join(', ')]] -%}
+{%- if aoff -%}
+  {%- set ns.items = ns.items + [['info', ('Automation' if aoff | count == 1 else aoff | count ~ ' Automationen') ~ ' aus', aoff | join(', ') ~ ' · <a href="/config/automation/dashboard">Automationen</a>']] -%}
 {%- endif -%}
-{#- Output -#}
-{%- set need = ns.e | count + ns.w | count -%}
-{%- if need + ns.i | count == 0 -%}
+
+{#- ---- Output ---- -#}
+{%- set need = ns.items | rejectattr(0,'eq','info') | list | count -%}
+{%- set limit = 5 -%}
+{%- if ns.items | count == 0 -%}
 <ha-alert alert-type="success" title="Alles gut">Nichts zu tun, alles läuft.</ha-alert>
 {%- else -%}
 {%- if need > 0 %}**{{ need }} {{ 'Ding braucht' if need == 1 else 'Dinge brauchen' }} dich**, der Rest läuft.
 {%- else %}**Alles läuft.** Nur ein paar Hinweise:
 {%- endif %}
 
-{% for x in ns.e %}<ha-alert alert-type="error" title="{{ x[0] | replace('"','') }}">{{ x[1] }}</ha-alert>
+{% for x in ns.items[:limit] %}<ha-alert alert-type="{{ x[0] }}" title="{{ x[1] | replace('"','') }}">{{ x[2] }}</ha-alert>
 {% endfor -%}
-{% for x in ns.w %}<ha-alert alert-type="warning" title="{{ x[0] | replace('"','') }}">{{ x[1] }}</ha-alert>
+{%- if ns.items | count > limit %}<details><summary>{{ ns.items | count - limit }} weitere</summary>
+{% for x in ns.items[limit:] %}<ha-alert alert-type="{{ x[0] }}" title="{{ x[1] | replace('"','') }}">{{ x[2] }}</ha-alert>
 {% endfor -%}
-{% for x in ns.i %}<ha-alert alert-type="info" title="{{ x[0] | replace('"','') }}">{{ x[1] }}</ha-alert>
-{% endfor -%}
+</details>
+{%- endif %}
 {%- endif %}
