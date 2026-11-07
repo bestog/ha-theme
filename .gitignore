@@ -1,0 +1,3 @@
+# impeccable downloads its engine binary here at runtime
+.claude/skills/impeccable/scripts/bin/
+*.verified
