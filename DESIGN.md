@@ -20,14 +20,25 @@ Geschmacksprofil, ermittelt im Gespräch (Runde 1–2). Grundlage für alle Them
 ## Nutzungskontext
 - **Smartphone (Companion App)** und **Wandtablet**: Touch-Ziele ≥ 44px, gut lesbar aus Distanz,
   Dark Mode muss nachts blendfrei sein.
-- **Karten:** Standard-HA-Karten (Tile, Thermostat, Entities …) und **Mushroom Cards**.
-  Das Theme muss beide über Variablen sauber abdecken.
+- **Karten:** Das Dashboard „Zuhause“ nutzt fast nur Standard-HA-Karten (Tile, Heading,
+  Badges, Markdown, Statistik- und Verlaufsgraphen) sowie die Flower-Card. Mushroom ist
+  installiert, aber nicht im Einsatz; das Theme deckt es nur noch minimal ab (Formen, Touch-Ziele).
 
 ## Entscheidungen
 - [x] **Variante B „Nebel“**: heller, weicher, zurückhaltend → `themes/nebel.yaml`
 - [x] Kontrast: alle Text-/Icon-Farben auf WCAG AA geprüft. Dafür wurden im Light Mode
       Sekundärtext (`#616C7C`) und Amber (`#BA7E34`) etwas abgedunkelt.
 - [x] Dark Mode ohne Karten-Schatten (nachts blendfrei, Tiefe kommt über Helligkeitsstufen).
+- [x] **Eine Bedeutung pro Farbton** (nach `/impeccable critique`):
+      Amber = nur Licht & Wärme · Ziegelrot = Achtung (offenes Fenster/Tür, Warnung) ·
+      Alarmrot = Fehler/Alarm · Indigo = sonstige aktive Zustände. Die HA-Farbnamen
+      (`color: orange/red/green …` im Dashboard) sind auf diese Palette gelegt.
+- [x] **Werte vor Namen:** In Kacheln ist der Zustand (z. B. 21,5 °C) 15px halbfett,
+      der Name 13px; lesbar aus Distanz am Wandtablet.
+- [x] **Hellmodus spürbar wärmer:** Karten `#FFFDF8`, Hintergrund `#EFEEEA`; die blaugraue
+      Schrift hält den Nebel-Charakter.
+- [x] Aktive Kacheln: im Hellmodus 10 % Tönung, im Dunkelmodus 5 % plus feiner 1px-Rand
+      (stärkere Tönung wirkte auf Blaugrau schlammig).
 
 ## Offene Entscheidungen
 - [ ] Schrift laden (benötigt Frontend-Ressource bzw. card-mod) oder System-Fallback

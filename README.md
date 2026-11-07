@@ -37,7 +37,8 @@ To load it:
 ## card-mod (optional, recommended)
 With [card-mod](https://github.com/thomasloven/lovelace-card-mod) (HACS) the theme also applies
 styles that variables can't express:
-- **Active tiles** (light on, heating running, window open …) get a soft tint of their state color.
+- **Active tiles** (light on, heating running, window open …) get a soft tint of their state color;
+  in dark mode a lighter tint plus a fine 1px ring in the state color.
 - **Tabular figures**: values like temperatures don't jump in width when they change.
 
 Without card-mod these extras are skipped and everything else still works.
@@ -46,19 +47,21 @@ Without card-mod these extras are skipped and everything else still works.
 All main colors sit at the top of each mode in `themes/nebel.yaml`, marked with
 `# ---- Palette (customize here) ----`. Values with `&name` are reused throughout
 the file. If you change them there, the change carries through everywhere. For colors
-written as RGB (`rgb-…`, `mush-rgb-…`), adjust the matching triplet as well.
+written as RGB (`rgb-…`), adjust the matching triplet as well.
 
 | Role | Light | Dark |
 |---|---|---|
-| Background | `#EEF1F4` | `#1B1F25` |
-| Card | `#FFFFFF` | `#252B33` |
+| Background | `#EFEEEA` | `#1B1F25` |
+| Card | `#FFFDF8` | `#252B33` |
 | Text | `#2A313B` | `#E3E7EC` |
 | Secondary text | `#616C7C` | `#959EAB` |
 | Accent (indigo) | `#5866C9` | `#9EA7EE` |
-| Warm (light/heating) | `#BA7E34` | `#E7B26C` |
+| Warm (light/heating only) | `#BA7E34` | `#E7B26C` |
+| Attention (open window/door, warning) | `#C9605B` | `#E8807C` |
+| Alarm / error | `#A83F3B` | `#F26B65` |
 
-All text and icon colors meet WCAG AA on card and background
-(text ≥ 4.5:1, icons ≥ 3:1).
+All text colors meet WCAG AA on cards and on the page background (≥ 4.5:1); state and
+icon colors meet ≥ 3:1 on cards, where Home Assistant places them (tiles, badges).
 
 ## Preview
 `preview/taste-test.html` shows the color direction (variant B = Nebel) in light and dark.

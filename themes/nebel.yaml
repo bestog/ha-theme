@@ -29,30 +29,23 @@ Nebel:
   ha-badge-border-radius: "999px"
   ha-tile-icon-border-radius: "50%"
 
-  # Mushroom: shapes & typography
-  mush-spacing: "12px"
-  mush-card-primary-font-size: "14px"
-  mush-card-secondary-font-size: "12px"
-  mush-card-primary-font-weight: "600"
-  mush-card-secondary-font-weight: "500"
-  mush-card-primary-line-height: "20px"
-  mush-card-secondary-line-height: "18px"
+  # Tile cards: the value (temperature, state) leads, the name supports it.
+  # Native HA variables, no card-mod needed. 16px + 20px lines fit a 1-row tile.
+  ha-tile-info-primary-font-size: "13px"
+  ha-tile-info-primary-font-weight: "500"
+  ha-tile-info-primary-line-height: "16px"
+  ha-tile-info-secondary-font-size: "15px"
+  ha-tile-info-secondary-font-weight: "600"
+  ha-tile-info-secondary-line-height: "20px"
+  ha-tile-info-secondary-letter-spacing: "0px"
+
+  # Optional: Mushroom Cards (not on the dashboard right now). Only shapes and
+  # touch targets; colors come from the HA state colors defined per mode.
   mush-icon-border-radius: "50%"
-  mush-icon-size: "40px"
   mush-control-border-radius: "12px"
   mush-control-height: "44px"            # touch target for phone & tablet
   mush-chip-border-radius: "999px"
-  mush-chip-height: "36px"
-  mush-chip-spacing: "8px"
-  mush-chip-font-size: "13px"
-  mush-chip-font-weight: "600"
-  mush-chip-icon-size: "18px"
   mush-badge-border-radius: "999px"
-  mush-title-font-size: "24px"
-  mush-title-font-weight: "700"
-  mush-title-line-height: "30px"
-  mush-subtitle-font-size: "14px"
-  mush-subtitle-font-weight: "500"
 
   # ---------- card-mod layer (requires card-mod from HACS) ----------
   # Applies only CSS that can't be set through variables. Without card-mod
@@ -63,10 +56,11 @@ Nebel:
       font-variant-numeric: tabular-nums;          /* digits don't jump when values change */
       transition: background-color 180ms ease, box-shadow 180ms ease;
     }
-    /* Tile card: active entities (light on, heating, open window ...)
-       get a soft tint of their state color */
+    /* Tile card: active entities (light on, heating, open window ...) get a
+       soft tint of their state color; strength and ring are set per mode. */
     ha-card.active {
-      background: color-mix(in srgb, var(--tile-color) 9%, var(--ha-card-background, var(--card-background-color)));
+      background: color-mix(in srgb, var(--tile-color) var(--nebel-active-tint, 9%), var(--ha-card-background, var(--card-background-color)));
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tile-color) var(--nebel-active-ring, 0%), transparent), var(--ha-card-box-shadow, 0 0 0 transparent);
     }
 
   modes:
@@ -75,37 +69,39 @@ Nebel:
     # =======================================================================
     light:
       # ---- Palette (customize here) ----
-      primary-background-color: &l-bg "#EEF1F4"      # page background
-      card-background-color: &l-card "#FFFFFF"       # cards
+      primary-background-color: &l-bg "#EFEEEA"      # page background
+      card-background-color: &l-card "#FFFDF8"       # cards (warm, not pure white)
       primary-text-color: &l-text "#2A313B"
       secondary-text-color: &l-sec "#616C7C"
-      divider-color: &l-div "#E3E7EC"
+      divider-color: &l-div "#E4E1DA"
       primary-color: &l-acc "#5866C9"                # indigo accent
       accent-color: *l-acc
-      # warm tone (light/heating): #BA7E34 · green: #4A9A78 · red: #C9605B
+      # amber = only light & warmth · brick = attention (open, warning) · alarm red = error
 
       rgb-primary-color: &l-acc-rgb "88, 102, 201"
       rgb-accent-color: *l-acc-rgb
       rgb-primary-text-color: "42, 49, 59"
       rgb-secondary-text-color: "97, 108, 124"
-      rgb-card-background-color: "255, 255, 255"
-      rgb-primary-background-color: "238, 241, 244"
+      rgb-card-background-color: "255, 253, 248"
+      rgb-primary-background-color: "239, 238, 234"
 
       # ---- Surfaces ----
-      secondary-background-color: "#E6EAEF"
+      secondary-background-color: "#E7E5DF"
       ha-card-background: *l-card
       ha-card-box-shadow: "0 1px 2px rgba(42, 49, 59, 0.04), 0 4px 16px rgba(42, 49, 59, 0.05)"
+      nebel-active-tint: "10%"                       # card-mod: tint of active tiles
+      nebel-active-ring: "0%"
       lovelace-background: *l-bg
       paper-card-background-color: *l-card
       paper-dialog-background-color: *l-card
       ha-dialog-surface-background: *l-card
       mdc-theme-surface: *l-card
       paper-listbox-background-color: *l-card
-      markdown-code-background-color: "#F3F5F8"
+      markdown-code-background-color: "#F5F3EE"
       table-row-background-color: *l-card
-      table-row-alternative-background-color: "#F6F8FA"
-      input-fill-color: "#F1F3F6"
-      input-disabled-fill-color: "#F1F3F6"
+      table-row-alternative-background-color: "#F8F6F1"
+      input-fill-color: "#F4F2ED"
+      input-disabled-fill-color: "#F4F2ED"
 
       # ---- Text ----
       text-primary-color: "#FFFFFF"                  # text on accent backgrounds
@@ -118,9 +114,9 @@ Nebel:
       # ---- Header & sidebar ----
       app-header-background-color: *l-bg
       app-header-text-color: *l-text
-      app-header-edit-background-color: "#DCE1E8"
+      app-header-edit-background-color: "#DEDBD4"
       app-header-edit-text-color: *l-text
-      sidebar-background-color: "#E6EAEF"
+      sidebar-background-color: "#E7E5DF"
       sidebar-text-color: *l-sec
       sidebar-icon-color: *l-sec
       sidebar-selected-background-color: "rgba(88, 102, 201, 0.10)"
@@ -131,8 +127,8 @@ Nebel:
       switch-checked-color: *l-acc
       switch-checked-button-color: *l-acc
       switch-checked-track-color: *l-acc
-      switch-unchecked-button-color: "#FFFFFF"
-      switch-unchecked-track-color: "#C3CAD4"
+      switch-unchecked-button-color: *l-card
+      switch-unchecked-track-color: "#CBC7BF"
       slider-color: *l-acc
       slider-bar-color: "rgba(88, 102, 201, 0.20)"
       paper-slider-knob-color: *l-acc
@@ -141,9 +137,21 @@ Nebel:
 
       # ---- Status colors ----
       success-color: "#4A9A78"
-      warning-color: "#BA7E34"
-      error-color: "#C9605B"
+      warning-color: &l-brick "#C9605B"              # attention: open, warning
+      error-color: &l-alarm "#A83F3B"                # alarm, error
       info-color: *l-acc
+      rgb-success-color: "74, 154, 120"
+      rgb-warning-color: "201, 96, 91"
+      rgb-error-color: "168, 63, 59"
+
+      # ---- HA named colors (color: orange/red/... in dashboards) ----
+      amber-color: "#BA7E34"
+      orange-color: *l-brick                         # e.g. open windows in the dashboard
+      deep-orange-color: *l-brick
+      red-color: *l-alarm
+      green-color: "#4A9A78"
+      blue-color: "#5B8DC9"
+      indigo-color: *l-acc
 
       # ---- Entity states (tile card, icons, badges) ----
       state-icon-color: *l-sec
@@ -164,12 +172,16 @@ Nebel:
       state-media_player-active-color: *l-acc
       state-cover-active-color: *l-acc
       state-lock-locked-color: "#4A9A78"
-      state-lock-unlocked-color: "#C9605B"
-      state-lock-jammed-color: "#C9605B"
+      state-lock-unlocked-color: *l-brick
+      state-lock-jammed-color: *l-alarm
       state-alarm_control_panel-armed_away-color: "#4A9A78"
       state-alarm_control_panel-disarmed-color: *l-sec
-      state-alarm_control_panel-triggered-color: "#C9605B"
-      state-binary_sensor-active-color: "#BA7E34"
+      state-alarm_control_panel-triggered-color: *l-alarm
+      state-binary_sensor-active-color: *l-acc
+      state-binary_sensor-window-on-color: *l-brick
+      state-binary_sensor-door-on-color: *l-brick
+      state-binary_sensor-opening-on-color: *l-brick
+      state-binary_sensor-garage_door-on-color: *l-brick
       state-person-home-color: "#4A9A78"
       state-person-not_home-color: *l-sec
       state-sun-above_horizon-color: "#BA7E34"
@@ -177,26 +189,6 @@ Nebel:
       energy-grid-consumption-color: *l-acc
       energy-solar-color: "#BA7E34"
 
-      # ---- Mushroom colors (RGB) ----
-      mush-rgb-state-entity: *l-acc-rgb
-      mush-rgb-state-light: "186, 126, 52"
-      mush-rgb-state-fan: *l-acc-rgb
-      mush-rgb-state-switch: *l-acc-rgb
-      mush-rgb-state-media-player: *l-acc-rgb
-      mush-rgb-state-cover: *l-acc-rgb
-      mush-rgb-state-climate-heat: "186, 126, 52"
-      mush-rgb-state-climate-cool: "91, 141, 201"
-      mush-rgb-state-lock-locked: "74, 154, 120"
-      mush-rgb-state-lock-unlocked: "201, 96, 91"
-      mush-rgb-state-person-home: "74, 154, 120"
-      mush-rgb-amber: "186, 126, 52"
-      mush-rgb-orange: "209, 122, 70"
-      mush-rgb-indigo: *l-acc-rgb
-      mush-rgb-blue: "91, 141, 201"
-      mush-rgb-green: "74, 154, 120"
-      mush-rgb-red: "201, 96, 91"
-      mush-rgb-disabled: "163, 172, 184"
-      mush-chip-background: *l-card
 
       # ---- Graph colors (statistics/history graphs, in series order) ----
       graph-color-1: *l-acc            # indigo
@@ -220,7 +212,7 @@ Nebel:
       divider-color: &d-div "#333B46"
       primary-color: &d-acc "#9EA7EE"                # brighter indigo for dark backgrounds
       accent-color: *d-acc
-      # warm tone: #E7B26C · green: #73C29C · red: #E8807C
+      # amber = only light & warmth · brick = attention · alarm red = error
 
       rgb-primary-color: &d-acc-rgb "158, 167, 238"
       rgb-accent-color: *d-acc-rgb
@@ -232,7 +224,9 @@ Nebel:
       # ---- Surfaces ----
       secondary-background-color: "#20252C"
       ha-card-background: *d-card
-      ha-card-box-shadow: "none"                     # no glow at night, contrast does the work
+      ha-card-box-shadow: "0 0 0 transparent"        # no glow at night, contrast does the work
+      nebel-active-tint: "5%"                        # less tint: amber on blue-gray turns khaki
+      nebel-active-ring: "38%"                       # fine 1px ring carries the state instead
       lovelace-background: *d-bg
       paper-card-background-color: *d-card
       paper-dialog-background-color: *d-card
@@ -279,9 +273,21 @@ Nebel:
 
       # ---- Status colors ----
       success-color: "#73C29C"
-      warning-color: "#E7B26C"
-      error-color: "#E8807C"
+      warning-color: &d-brick "#E8807C"
+      error-color: &d-alarm "#F26B65"
       info-color: *d-acc
+      rgb-success-color: "115, 194, 156"
+      rgb-warning-color: "232, 128, 124"
+      rgb-error-color: "242, 107, 101"
+
+      # ---- HA named colors ----
+      amber-color: "#E7B26C"
+      orange-color: *d-brick
+      deep-orange-color: *d-brick
+      red-color: *d-alarm
+      green-color: "#73C29C"
+      blue-color: "#7FAAE0"
+      indigo-color: *d-acc
 
       # ---- Entity states ----
       state-icon-color: *d-sec
@@ -302,12 +308,16 @@ Nebel:
       state-media_player-active-color: *d-acc
       state-cover-active-color: *d-acc
       state-lock-locked-color: "#73C29C"
-      state-lock-unlocked-color: "#E8807C"
-      state-lock-jammed-color: "#E8807C"
+      state-lock-unlocked-color: *d-brick
+      state-lock-jammed-color: *d-alarm
       state-alarm_control_panel-armed_away-color: "#73C29C"
       state-alarm_control_panel-disarmed-color: *d-sec
-      state-alarm_control_panel-triggered-color: "#E8807C"
-      state-binary_sensor-active-color: "#E7B26C"
+      state-alarm_control_panel-triggered-color: *d-alarm
+      state-binary_sensor-active-color: *d-acc
+      state-binary_sensor-window-on-color: *d-brick
+      state-binary_sensor-door-on-color: *d-brick
+      state-binary_sensor-opening-on-color: *d-brick
+      state-binary_sensor-garage_door-on-color: *d-brick
       state-person-home-color: "#73C29C"
       state-person-not_home-color: *d-sec
       state-sun-above_horizon-color: "#E7B26C"
@@ -315,26 +325,6 @@ Nebel:
       energy-grid-consumption-color: *d-acc
       energy-solar-color: "#E7B26C"
 
-      # ---- Mushroom colors (RGB) ----
-      mush-rgb-state-entity: *d-acc-rgb
-      mush-rgb-state-light: "231, 178, 108"
-      mush-rgb-state-fan: *d-acc-rgb
-      mush-rgb-state-switch: *d-acc-rgb
-      mush-rgb-state-media-player: *d-acc-rgb
-      mush-rgb-state-cover: *d-acc-rgb
-      mush-rgb-state-climate-heat: "231, 178, 108"
-      mush-rgb-state-climate-cool: "127, 170, 224"
-      mush-rgb-state-lock-locked: "115, 194, 156"
-      mush-rgb-state-lock-unlocked: "232, 128, 124"
-      mush-rgb-state-person-home: "115, 194, 156"
-      mush-rgb-amber: "231, 178, 108"
-      mush-rgb-orange: "230, 150, 100"
-      mush-rgb-indigo: *d-acc-rgb
-      mush-rgb-blue: "127, 170, 224"
-      mush-rgb-green: "115, 194, 156"
-      mush-rgb-red: "232, 128, 124"
-      mush-rgb-disabled: "107, 115, 128"
-      mush-chip-background: *d-card
 
       # ---- Graph colors ----
       graph-color-1: *d-acc
