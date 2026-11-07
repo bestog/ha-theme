@@ -26,13 +26,16 @@ browser profile, or for a single dashboard via `theme: Nebel` in the view.
 
 ## Loading the font (optional, recommended)
 The theme uses **Plus Jakarta Sans** and otherwise falls back to the system font.
-To load it:
-*Settings → Dashboards → ⋮ → Resources → Add resource*
 
-- URL: `https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap`
-- Type: **Stylesheet**
+1. Copy `fonts/plus-jakarta-sans-latin.woff2` to `/config/www/fonts/` (File editor app,
+   Studio Code Server or Samba). Files in `/config/www` are served at `/local/`.
+2. *Settings → Dashboards → ⋮ → Resources → Add resource*, type **JavaScript module**,
+   and paste the contents of `fonts/nebel-font.js` as an inline resource, or copy it to
+   `/config/www/fonts/` and use the URL `/local/fonts/nebel-font.js`.
 
-(Requires "Advanced mode" in your user profile.)
+The loader prefers the self-hosted file and only falls back to Google Fonts while the
+file is missing, so the wall tablet keeps its font offline and after a cold start.
+The font is licensed under the SIL Open Font License 1.1 (`fonts/OFL.txt`).
 
 ## card-mod (optional, recommended)
 With [card-mod](https://github.com/thomasloven/lovelace-card-mod) (HACS) the theme also applies
