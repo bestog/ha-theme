@@ -61,6 +61,13 @@ sind auf diese Palette gelegt. Kontrast geprüft: Text ≥ 4,5:1, Zustands-Icons
     `relative_time`, das immer Englisch liefert.
   - Ab 5 Zeilen klappt der Rest nativ ein (`<details>` als Pill „+ N weitere“).
   - Leere Batterien bleiben bewusst Fehler (Entscheidung des Nutzers).
+- Alltagsnamen statt Technik (vierte Kritik): Makro `nett()` macht aus
+  „Schlafzimmer - Window Sensor Opening“ → „Fenster Schlafzimmer“, „Garage Door Sensor“ →
+  „Garagentor“, „Hue Smart button 2“ → „Hue-Taster Wohnzimmer“ usw.
+- Fensterlogik nur für echte Kontakte (`opening`/`door`/`garage_door`); die
+  Fenstererkennung der Thermostate (`window`) und die Gruppe „Wohnzimmer Windows“ zählen
+  nicht, sonst stünde dasselbe Fenster doppelt da.
+- Eingeklappt wird erst, wenn mindestens zwei Zeilen verborgen würden (bis 6 bleiben offen).
 
 ## Nutzungskontext
 - **Smartphone (Companion App)** und **Wandtablet**: gut lesbar aus Distanz, der Dunkelmodus ist
