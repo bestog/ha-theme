@@ -13,12 +13,16 @@
 
 Hausmeister:
   # ---------- Shared settings (independent of mode) ----------
-  primary-font-family: &font "ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif"
+  # Barlow (text) and Barlow Semi Condensed (headings, values): technical, like
+  # DIN signage, very legible from a distance. Loaded by fonts/hausmeister-fonts.js;
+  # without it the system font takes over cleanly.
+  primary-font-family: &font "Barlow, ui-sans-serif, -apple-system, 'Segoe UI', system-ui, Roboto, sans-serif"
   paper-font-common-base_-_font-family: *font
   paper-font-body1_-_font-family: *font
   mdc-typography-font-family: *font
   ha-font-family-body: *font
-  ha-font-family-heading: *font
+  ha-font-family-heading: &display "'Barlow Semi Condensed', Barlow, ui-sans-serif, system-ui, sans-serif"
+  hm-font-display: *display
 
   # Shapes: 14px cards with a fine line, rounded-square icon tiles, pill badges
   ha-card-border-radius: "14px"
@@ -31,8 +35,8 @@ Hausmeister:
   ha-tile-icon-border-radius: "11px"
 
   # Headings: bold and confident, subtitles calm
-  ha-heading-card-title-font-size: "20px"
-  ha-heading-card-title-font-weight: "800"
+  ha-heading-card-title-font-size: "19px"
+  ha-heading-card-title-font-weight: "700"
   ha-heading-card-title-line-height: "26px"
   ha-heading-card-subtitle-font-size: "14px"
   ha-heading-card-subtitle-font-weight: "600"
@@ -42,7 +46,7 @@ Hausmeister:
   ha-tile-info-primary-font-size: "13px"
   ha-tile-info-primary-font-weight: "500"
   ha-tile-info-primary-line-height: "16px"
-  ha-tile-info-secondary-font-size: "15px"
+  ha-tile-info-secondary-font-size: "17px"
   ha-tile-info-secondary-font-weight: "700"
   ha-tile-info-secondary-line-height: "20px"
   ha-tile-info-secondary-letter-spacing: "0px"
@@ -72,8 +76,15 @@ Hausmeister:
         --tile-icon-color: var(--hm-warm-fill);
       }
       /* Headings set tighter, values with even digits */
-      .content.title { letter-spacing: -0.02em !important; }
+      .content.title {
+        font-family: var(--hm-font-display) !important;
+        text-transform: uppercase;
+        letter-spacing: 0.02em !important;
+      }
       ha-card { font-variant-numeric: tabular-nums; }
+    # Tile values (temperature, state) in the display face, like a label on a panel
+    ha-tile-info$: |
+      .secondary { font-family: var(--hm-font-display); }
     # Aufgaben/Hinweise: ha-alert rows inside Markdown cards, Ronny style.
     # Calm rows on the inset surface with a filled icon square; only errors
     # get a red tint, so they stand out.
@@ -85,7 +96,7 @@ Hausmeister:
       }
       ha-markdown-element > p:first-child strong {
         color: var(--primary-text-color);
-        font-weight: 800;
+        font-weight: 700;
       }
       ha-alert {
         margin: 0 0 6px !important;
@@ -115,7 +126,7 @@ Hausmeister:
         font-weight: 600;
       }
       details summary::-webkit-details-marker { display: none; }
-      details summary::before { content: "+"; font-weight: 800; }
+      details summary::before { content: "+"; font-weight: 700; }
       details[open] summary::before { content: "–"; }
     ha-markdown $ ha-alert $: |
       .issue-type {
