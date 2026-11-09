@@ -1,6 +1,6 @@
 {#- Aufgaben card (Markdown). Each item: [severity, title, detail].
     Details may contain plain <a href> links. Same kinds of problems are bundled
-    into one row; after 5 rows the rest folds away in <details>. -#}
+    into one row; with more than 6 rows the rest folds away in <details>. -#}
 {%- macro dauer(dt) -%}
   {%- set m = ((now() - dt).total_seconds() / 60) | int -%}
   {%- if m < 1 -%}gerade eben
@@ -13,17 +13,32 @@
   {%- set d = device_id(entity_id) -%}
   {%- if d -%}<a href="/config/devices/device/{{ d }}">{{ label }}</a>{%- else -%}{{ label }}{%- endif -%}
 {%- endmacro -%}
+{#- Everyday names instead of technical ones. art: 'offen' (open state),
+    'bat' (battery), anything else = the device itself. -#}
+{%- macro nett(s, art) -%}
+  {%- set n = s.name -%}
+  {%- set a = area_name(s.entity_id) or '' -%}
+  {%- if n is search('wleak', ignorecase=True) -%}Wassermelder {{ a }}
+  {%- elif n is search('garage', ignorecase=True) -%}Garagentor
+  {%- elif n is search(' - Window Sensor') -%}{{ ('Fensterkontakt ' if art == 'bat' else 'Fenster ') ~ n.split(' - ')[0] }}
+  {%- elif n is search(' - Door Sensor') -%}{{ ('Türkontakt ' if art == 'bat' else 'Tür ') ~ n.split(' - ')[0] }}
+  {%- elif n is search(' - Climate Sensor') -%}Klimasensor {{ n.split(' - ')[0] }}
+  {%- elif n is search('Hue Smart button', ignorecase=True) -%}Hue-Taster {{ a }}
+  {%- elif n is search('Hue (dimmer )?switch', ignorecase=True) -%}Hue-Dimmer {{ a }}
+  {%- elif n is search('Plant Sensor', ignorecase=True) -%}Pflanzensensor {{ a }}
+  {%- elif n is search('IO Series', ignorecase=True) -%}Zahnbürste
+  {%- else -%}{{ n | replace(' Battery','') }}{%- endif -%}
+{%- endmacro -%}
 {%- set ns = namespace(items=[], offline=[], leer=[], schwach=[]) -%}
-{%- set skip = 'skoda|predicted|durchzug|fenster_und_turen' -%}
+{%- set skip = 'skoda|predicted|durchzug|fenster_und_turen|windows_opening' -%}
 
 {#- ---- Errors ---- -#}
 {%- for s in states.binary_sensor
      | selectattr('attributes.device_class','defined')
-     | selectattr('attributes.device_class','in',['window','door','opening','garage_door','moisture','smoke'])
+     | selectattr('attributes.device_class','in',['door','opening','garage_door','moisture','smoke'])
      | rejectattr('entity_id','search',skip)
      | selectattr('state','eq','unavailable') -%}
-  {%- set n = s.name | replace('LUMI lumi.sensor_wleak.aq1','Wassermelder Bad') | replace('unk_manufacturer lumi.sensor_wleak.aq1','Wassermelder Bad') -%}
-  {%- set ns.offline = ns.offline + [geraet(s.entity_id, n)] -%}
+  {%- set ns.offline = ns.offline + [geraet(s.entity_id, nett(s, 'geraet'))] -%}
 {%- endfor -%}
 {%- if ns.offline | count == 1 -%}
   {%- set ns.items = ns.items + [['error', 'Sensor offline', ns.offline[0] ~ ' meldet sich nicht mehr.']] -%}
@@ -34,7 +49,7 @@
   {%- set ns.items = ns.items + [['error', 'Heizung ' ~ s.name ~ ' nicht erreichbar', geraet(s.entity_id, 'Thermostat öffnen')]] -%}
 {%- endfor -%}
 {%- for s in states.binary_sensor | selectattr('attributes.device_class','defined') | selectattr('attributes.device_class','in',['moisture','smoke']) | selectattr('state','eq','on') -%}
-  {%- set ns.items = ns.items + [['error', s.name ~ ': Alarm', 'Bitte sofort nachsehen. ' ~ geraet(s.entity_id, 'Melder öffnen')]] -%}
+  {%- set ns.items = ns.items + [['error', nett(s, 'geraet') ~ ': Alarm', 'Bitte sofort nachsehen. ' ~ geraet(s.entity_id, 'Melder öffnen')]] -%}
 {%- endfor -%}
 {%- if is_state('binary_sensor.rpi_power_status','on') -%}
   {%- set ns.items = ns.items + [['error', 'Stromversorgung instabil', 'Der Raspberry Pi bekommt zu wenig Strom. <a href="/config/hardware">Hardware ansehen</a>']] -%}
@@ -47,9 +62,7 @@
 {#- ---- Batteries: empty = error, low = warning; bundled ---- -#}
 {%- for s in states.sensor | selectattr('attributes.device_class','defined') | selectattr('attributes.device_class','eq','battery') | rejectattr('entity_id','search','iphone|skoda|roborock|24h') | selectattr('state','is_number') -%}
   {%- set v = s.state | float -%}
-  {%- set n = s.name | replace(' Battery','') | replace('unk_manufacturer unk_model','Wassermelder') -%}
-  {%- set a = area_name(s.entity_id) -%}
-  {%- set label = n ~ (' (' ~ a ~ ')' if a else '') ~ ' ' ~ v | int ~ ' %' -%}
+  {%- set label = nett(s, 'bat') ~ ' ' ~ v | int ~ ' %' -%}
   {%- if v <= 5 -%}{%- set ns.leer = ns.leer + [geraet(s.entity_id, label)] -%}
   {%- elif v < 20 -%}{%- set ns.schwach = ns.schwach + [geraet(s.entity_id, label)] -%}{%- endif -%}
 {%- endfor -%}
@@ -65,11 +78,11 @@
     shorter airing is shown by the badge and the tiles. -#}
 {%- for s in states.binary_sensor
      | selectattr('attributes.device_class','defined')
-     | selectattr('attributes.device_class','in',['window','door','opening','garage_door'])
+     | selectattr('attributes.device_class','in',['door','opening','garage_door'])
      | rejectattr('entity_id','search',skip)
      | selectattr('state','eq','on') -%}
   {%- if (now() - s.last_changed).total_seconds() > 1800 -%}
-    {%- set ns.items = ns.items + [['warning', s.name ~ ' ist offen', dauer(s.last_changed) ~ ' · Heizung im Blick behalten']] -%}
+    {%- set ns.items = ns.items + [['warning', nett(s, 'offen') ~ ' ist offen', dauer(s.last_changed) ~ ' · Heizung im Blick behalten']] -%}
   {%- endif -%}
 {%- endfor -%}
 {%- for s in states.sensor | selectattr('entity_id','search','_mold_risk_percentage$') | selectattr('state','is_number') -%}
@@ -98,7 +111,8 @@
 
 {#- ---- Output ---- -#}
 {%- set need = ns.items | rejectattr(0,'eq','info') | list | count -%}
-{%- set limit = 5 -%}
+{#- Up to 6 rows stay open; beyond that 5 show and the rest folds (always 2+). -#}
+{%- set limit = 6 if ns.items | count <= 6 else 5 -%}
 {%- if ns.items | count == 0 -%}
 <ha-alert alert-type="success" title="Alles gut">Nichts zu tun, alles läuft.</ha-alert>
 {%- else -%}
