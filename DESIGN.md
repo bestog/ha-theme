@@ -30,8 +30,13 @@ sind auf diese Palette gelegt. Kontrast geprüft: Text ≥ 4,5:1, Zustands-Icons
 ## Form & Typo
 - Karten 14px mit feiner 1px-Linie und kaum Schatten; Icon-Kacheln abgerundet-eckig (11px);
   Badges als Pills.
-- Systemschrift (SF, Segoe UI, Roboto) wie im Vorbild.
-- Überschriften (Heading-Karte) 20px in 800; in Kacheln führt der Wert (15px, 700),
+- **Schrift (seit Lauf 5): Barlow.** Technisch wie DIN-Beschilderung, aus Distanz sehr gut
+  lesbar. Barlow (400–700) für Text, Barlow Semi Condensed (600/700) für Überschriften
+  (Versalien, +0,02em) und die Werte in Kacheln (17px). Geladen über
+  `fonts/hausmeister-fonts.js` (selbst gehostet unter `/config/www/fonts`, Google als
+  Rückfall); ohne Loader greift sauber die Systemschrift. Mono-Schriften wurden verworfen:
+  „21,5 °C · 48 %“ passte nicht mehr in halbbreite Kacheln.
+- Überschriften (Heading-Karte) 19px in 700; in Kacheln führt der Wert (15px, 700),
   der Name steht leise darüber (13px, grau).
 
 ## card-mod-Schicht

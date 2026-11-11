@@ -5,8 +5,7 @@ page with white cards and charcoal text; in dark mode ("Nachtschicht") it is cha
 glowing amber. Amber marks light and warmth, teal means all good, red asks for attention.
 
 It is built from Home Assistant's own means: theme variables plus a small
-[card-mod](https://github.com/thomasloven/lovelace-card-mod) layer, with no extra fonts and no
-custom cards. It works with the standard cards (Tile, Heading, Badges, Markdown, graphs) and
+[card-mod](https://github.com/thomasloven/lovelace-card-mod) layer, and no custom cards. It works with the standard cards (Tile, Heading, Badges, Markdown, graphs) and
 follows the system's light/dark setting.
 
 **card-mod (recommended):** gives active tiles a filled icon square with a dark symbol (lights
@@ -36,6 +35,19 @@ Profile → *Theme* → **Hausmeister**, mode *Auto*.
 attention (offline sensors, empty batteries, open windows, plants, updates …) as `ha-alert`
 rows. With card-mod, the theme styles them as calm rows with filled icon squares; errors get a
 red tint. Paste it into a Markdown card and adjust the entity filters to your home.
+
+## Font: Barlow (recommended)
+The theme uses **Barlow** for text and **Barlow Semi Condensed** for headings and tile values;
+without them it falls back to the system font.
+
+1. Copy the `.woff2` files from `fonts/` to `/config/www/fonts/` (File editor app, Studio Code
+   Server or Samba). Files in `/config/www` are served at `/local/`.
+2. *Settings → Dashboards → ⋮ → Resources → Add resource*, type **JavaScript module**: paste
+   `fonts/hausmeister-fonts.js` as an inline resource, or copy it to `/config/www/fonts/` and
+   use `/local/fonts/hausmeister-fonts.js`.
+
+The loader prefers the self-hosted files and only falls back to Google Fonts while they are
+missing. Fonts are licensed under the SIL Open Font License 1.1 (`fonts/OFL.txt`).
 
 ## Customizing
 All main colors sit at the top of each mode in `themes/hausmeister.yaml`, marked with
